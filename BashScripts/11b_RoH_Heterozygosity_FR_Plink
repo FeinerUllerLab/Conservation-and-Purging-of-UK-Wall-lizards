@@ -1,0 +1,47 @@
+#! /bin/bash -l
+
+#SBATCH --job-name=RoH_Het
+#SBATCH --ntasks=1
+#SBATCH --nodes=1
+#SBATCH --time=120:00:00
+#SBATCH --mem=125G
+#SBATCH --error=logs/RoH_Het.%J.err
+#SBATCH --output=logs/RoH_Het.%J.out
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=feiner@evolbio.mpg.de
+#SBATCH --partition=standard
+
+### To obtain Runs of Homozygosity using bcftools and plink and calculate the FROH for each sample (inbreeding coefficient)
+
+VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_French_final.vcf.gz
+
+mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_FR/plink
+cd /home/feiner/Projects/UKwallies/Results_RoH_Het_FR/plink
+
+#### PLINK
+plink --vcf ${VCF}_pseudo \
+      --aec \
+      --homozyg \
+      --homozyg-window-snp 100 \
+      --homozyg-snp 50 \
+      --homozyg-kb 2000 \
+      --homozyg-gap 500 \
+      --homozyg-density 60 \
+      --homozyg-window-missing 5 \
+      --homozyg-window-het 2 \
+      --homozyg-window-threshold 0.05\
+      --out froh_summary_plink_FR_2Mb
+
+plink --vcf ${VCF}_pseudo \
+      --aec \
+      --homozyg \
+      --homozyg-window-snp 100 \
+      --homozyg-snp 50 \
+      --homozyg-kb 500 \
+      --homozyg-gap 500 \
+      --homozyg-density 60 \
+      --homozyg-window-missing 5 \
+      --homozyg-window-het 2 \
+      --homozyg-window-threshold 0.05\
+      --out froh_summary_plink_FR_500kb
+
