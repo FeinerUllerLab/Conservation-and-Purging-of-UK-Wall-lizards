@@ -28,22 +28,20 @@ This directory includes the pipeline, starting from raw reads to the analysis of
     * **08. Genetic clustering analysis (ADMIXTURE).**
     * **09. Maximum Likelihood-tree.**
 * **Genetic diversity and inbreeding:**
-    * **10. Genetic diversity** (autosomal observed heterozygosity).
-    * **11. Runs of homozygosity** (BCFtools and PLINK were used).
+    * **10. Heterozygosity and Runs of Homozygosity** (main results: BCFtools, 2 Mb).
+    * **11. Heterozygosity and Runs of Homozygosity** (supplementary results: PLINK, 500 kb + 2 Mb).
 * **Purging of deleterious mutations:**
     * **12. Annotation of variants** based on predicted impact.
     * **13. Relative frequencies calculation** for derived allele ratios and block jackknifing.
 * **Recombination sites analysis** 
     * **14. Recombination hotspots finding** 5kb windows with 5x recombinarion in three different scenarions (40Kb, 1Mb and chromosme backgrounds)
-    * **15. Enrichement-depletion analysis** using a permutation test to evaluate deleterious allles in hotspots vs random coding regions in the genome. 
 
 
 ### R Scripts
 
 This directory includes:
 
-* **`Compiled_Results.R`**: This script compiles and visualizes all results from the previous analyses, including plots for genetic structure, diversity, inbreeding, and purging metrics.
-* **`Sample_Locations.R`**: This script maps the geographic locations of the samples used in the project across their non-native (England) and native ranges (France and Italy), providing spatial context for the genetic data.
+* **`01.Compiled_Results.R`**: This script compiles and visualizes all results from the previous analyses, including plots for genetic structure, diversity, inbreeding, and purging metrics.
 
 ### Data
 
