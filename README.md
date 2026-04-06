@@ -1,7 +1,7 @@
 # Conservation-and-Purging-of-Wall-lizards
 ---
 
-Scripts and data analysis used for the MSc project: "Shaped by Isolation: Genetic Load and Purging in Non-Native Populations of Wall Lizards (*Podarcis muralis*)."
+Scripts and data analysis used for the article: "Shaped by Isolation: Genetic Load and Purging in Non-Native Populations of Wall Lizards (*Podarcis muralis*)."
 
 This repository contains the scripts developed to analyze population structure, genetic diversity, inbreeding, and the purging of deleterious mutations using whole-genome data from non-native and native populations of wall lizards.
 
