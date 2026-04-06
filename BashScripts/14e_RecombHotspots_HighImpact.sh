@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Paths to input files
+HOTSPOTS="/home/feiner/Projects/UKwallies/RecombHotSpots/All_Merged_Hotspots.bed"
+VCF="/home/feiner/Projects/UKwallies/Purging/Polarised_Impacts_NCBI/All_Polarised_high_renamed2.vcf.gz"
+
+# Temporary BED version of VCF (extract chromosome and position as BED)
+# VCF positions are 1-based; BED is 0-based, so subtract 1 from POS
+TMP_VCF_BED="/tmp/high_impact.bed"
+
+zcat $VCF | grep -v '^#' | awk '{print $1"\t"($2-1)"\t"$2}' > $TMP_VCF_BED
+
+# Intersect hotspots and high-impact variants
+# -u : report each variant once if it overlaps a hotspot
+INTERSECT_FILE="/tmp/variants_in_hotspots.txt"
+
+bedtools intersect -a $TMP_VCF_BED -b $HOTSPOTS -u > $INTERSECT_FILE
+
+# Count number of variants in hotspots
+NUM_VARIANTS=$(wc -l < $INTERSECT_FILE)
+
+echo "Number of HIGH impact variants located in recombination hotspots: $NUM_VARIANTS"
+
+# Optional: total number of HIGH impact variants for reference
+TOTAL_VARIANTS=$(zcat $VCF | grep -v '^#' | wc -l)
+echo "Total number of HIGH impact variants: $TOTAL_VARIANTS"
+
+# Optional: percentage in hotspots
+PERCENT=$(awk -v n=$NUM_VARIANTS -v t=$TOTAL_VARIANTS 'BEGIN{if(t>0) print (n/t)*100; else print 0}')
+echo "Percentage of HIGH impact variants in hotspots: ${PERCENT}%"
