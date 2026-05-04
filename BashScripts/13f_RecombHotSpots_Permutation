@@ -1,0 +1,52 @@
+#!/bin/bash
+
+HOTSPOTS="/home/feiner/Projects/UKwallies/RecombHotSpots/Step4/allchrom_w2kb_s1kb_f40kb_fd5_sw0_sf0_overlaps-mergeall.txt"
+VCF="/home/feiner/Projects/UKwallies/Purging/Polarised_Impacts_RefSeq/All_Polarised_high_renamed2.vcf.gz"
+
+CHROM_LEN="/home/feiner/Projects/UKwallies/scripts/Chr_Length_GenBank.txt"
+TMP_VCF_BED="/tmp/high_impact.bed"
+PERM=1000
+OUTDIR="/home/feiner/Projects/UKwallies/RecombHotSpots/Step6"
+mkdir -p $OUTDIR
+
+# Uncompress VCF and remove header lines
+zcat $VCF | grep -v '^#' | awk '{print $1"\t"$2-1"\t"$2}' > $OUTDIR/variants.bed
+
+# Count observed overlaps
+OBS=$(tail -n +2 $HOTSPOTS | bedtools intersect -a - -b $OUTDIR/variants.bed -wa -u | wc -l)
+echo "Observed overlaps: $OBS"
+
+# Prepare file for permutation overlaps
+PERM_FILE="$OUTDIR/permutation_overlaps.txt"
+> $PERM_FILE
+
+echo "Running $PERM permutations..."
+for i in $(seq 1 $PERM); do
+    # Shuffle hotspots genome-wide (within chromosomes)
+    tail -n +2 $HOTSPOTS | bedtools shuffle -i - -g $CHROM_LEN -chrom > $OUTDIR/shuffled.bed
+    # Count overlaps with variants
+    COUNT=$(bedtools intersect -a $OUTDIR/shuffled.bed -b $OUTDIR/variants.bed -wa -u | wc -l)
+    
+    echo $COUNT >> $PERM_FILE
+done
+
+# Compute p-value (one-sided enrichment)
+PVAL=$(awk -v obs=$OBS 'BEGIN{n=0}{if($1>=obs)n++}END{print n/NR}' $PERM_FILE) 
+
+# Compute mean and 95% CI of permutation overlaps
+MEAN=$(awk '{sum+=$1; n++} END{if(n>0) print sum/n; else print 0}' $PERM_FILE)
+
+# Compute 95% CI
+sort -n $PERM_FILE > $OUTDIR/permutation_sorted.txt
+TOTAL=$(wc -l < $OUTDIR/permutation_sorted.txt)
+LOW_LINE=$(awk -v total=$TOTAL 'BEGIN{print int(total*0.025)+1}')
+UP_LINE=$(awk -v total=$TOTAL 'BEGIN{print int(total*0.975)+1}')
+LOW=$(sed -n "${LOW_LINE}p" $OUTDIR/permutation_sorted.txt)
+UP=$(sed -n "${UP_LINE}p" $OUTDIR/permutation_sorted.txt)
+
+# Print summary
+echo "Permutation test summary:"
+echo "Observed overlaps: $OBS"
+echo "Permutation mean overlaps: $MEAN"
+echo "95% CI (2.5-97.5 percentile): [$LOW, $UP]"
+echo "Empirical p-value: $PVAL"
