@@ -462,25 +462,25 @@ wilcox.test(FRoH ~ Origin, data = RoH_HET_FR)
 #####
 
 RoH_IT_Supp <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_IT_500kb.txt", header = T)
-RoH_IT_Supp <- merge(RoH_IT_Supp, Lizards, by.x = "Sample", by.y = "ID")
+RoH_IT_Supp <- merge(RoH_IT_Supp, Lizards_admix, by.x = "Sample", by.y = "ID")
 RoH_IT_Supp$Length <- RoH_IT_Supp$Length/1000000
 p1S <- ggplot(RoH_IT_Supp, aes(y = nRoH, x = Length, color=Origin)) +
-  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
+  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   geom_text_repel(data = subset(RoH_IT_Supp, Origin == "Int-ITA"), aes(label = Abbpop), color="black") +
   theme_bw()
 p2S <- ggplot(RoH_IT_Supp, aes(y = FRoH, x = Origin, color=Origin)) +
-  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
+  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.31) + theme_bw()
 
 RoH_FR_Supp <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_FR_500kb.txt", header = T)
-RoH_FR_Supp <- merge(RoH_FR_Supp, Lizards, by.x = "Sample", by.y = "ID")
+RoH_FR_Supp <- merge(RoH_FR_Supp, Lizards_admix, by.x = "Sample", by.y = "ID")
 RoH_FR_Supp$Length <- RoH_FR_Supp$Length/1000000
 p3S <- ggplot(RoH_FR_Supp, aes(y = nRoH, x = Length, color=Origin)) +
-  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
+  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   geom_text_repel(data = subset(RoH_FR_Supp, Origin == "Int-FRA"), aes(label = Abbpop), color="black") +
   theme_bw()
 p4S <- ggplot(RoH_FR_Supp, aes(y = FRoH, x = Origin, color=Origin)) +
-  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
+  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.31) + theme_bw()
 
 RoH_IT_plink_2Mb<- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_IT_2Mb.hom.indiv", header = T)
@@ -488,13 +488,13 @@ RoH_IT_plink_2Mb$FRoH <- RoH_IT_plink_2Mb$KB/RoH_IT_plink_2Mb$KB[RoH_IT_plink_2M
 RoH_IT_plink_2Mb <- subset(RoH_IT_plink_2Mb, FID != "Pxx")
 RoH_IT_plink_2Mb$Length <- RoH_IT_plink_2Mb$KB/1000
 colnames(RoH_IT_plink_2Mb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_IT_plink_2Mb <- merge(RoH_IT_plink_2Mb, Lizards, by.x = "Sample", by.y = "ID")
+RoH_IT_plink_2Mb <- merge(RoH_IT_plink_2Mb, Lizards_admix, by.x = "Sample", by.y = "ID")
 p_pl_IT_2Mb_1 <- ggplot(RoH_IT_plink_2Mb, aes(y = nRoH, x = Length, color=Origin)) +
-  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
+  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   geom_text_repel(data = subset(RoH_IT_plink_2Mb, Origin == "Int-ITA"), aes(label = Abbpop), color="black") +
   theme_bw()
 p_pl_IT_2Mb_2 <- ggplot(RoH_IT_plink_2Mb, aes(y = FRoH, x = Origin, color=Origin)) +
-  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
+  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.18) + theme_bw()
 
 RoH_FR_plink_2Mb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_FR_2Mb.hom.indiv", header = T)
@@ -502,13 +502,13 @@ RoH_FR_plink_2Mb$FRoH <- RoH_FR_plink_2Mb$KB/RoH_FR_plink_2Mb$KB[RoH_FR_plink_2M
 RoH_FR_plink_2Mb <- subset(RoH_FR_plink_2Mb, FID != "Pxx")
 RoH_FR_plink_2Mb$Length <- RoH_FR_plink_2Mb$KB/1000
 colnames(RoH_FR_plink_2Mb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_FR_plink_2Mb <- merge(RoH_FR_plink_2Mb, Lizards, by.x = "Sample", by.y = "ID")
+RoH_FR_plink_2Mb <- merge(RoH_FR_plink_2Mb, Lizards_admix, by.x = "Sample", by.y = "ID")
 p_pl_FR_2Mb_1 <- ggplot(RoH_FR_plink_2Mb, aes(y = nRoH, x = Length, color=Origin)) +
-  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
+  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   geom_text_repel(data = subset(RoH_FR_plink_2Mb, Origin == "Int-FRA"), aes(label = Abbpop), color="black") +
   theme_bw()
 p_pl_FR_2Mb_2 <- ggplot(RoH_FR_plink_2Mb, aes(y = FRoH, x = Origin, color=Origin)) +
-  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
+  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.18) + theme_bw()
 
 RoH_IT_plink_500kb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_IT_500kb.hom.indiv", header = T)
@@ -516,13 +516,13 @@ RoH_IT_plink_500kb$FRoH <- RoH_IT_plink_500kb$KB/RoH_IT_plink_500kb$KB[RoH_IT_pl
 RoH_IT_plink_500kb <- subset(RoH_IT_plink_500kb, FID != "Pxx")
 RoH_IT_plink_500kb$Length <- RoH_IT_plink_500kb$KB/1000
 colnames(RoH_IT_plink_500kb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_IT_plink_500kb <- merge(RoH_IT_plink_500kb, Lizards, by.x = "Sample", by.y = "ID")
+RoH_IT_plink_500kb <- merge(RoH_IT_plink_500kb, Lizards_admix, by.x = "Sample", by.y = "ID")
 p_pl_IT_500kb_1 <- ggplot(RoH_IT_plink_500kb, aes(y = nRoH, x = Length, color=Origin)) +
-  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
+  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   geom_text_repel(data = subset(RoH_IT_plink_500kb, Origin == "Int-ITA"), aes(label = Abbpop), color="black") +
   theme_bw()
 p_pl_IT_500kb_2 <- ggplot(RoH_IT_plink_500kb, aes(y = FRoH, x = Origin, color=Origin)) +
-  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
+  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.35) + theme_bw()
 
 RoH_FR_plink_500kb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_FR_500kb.hom.indiv", header = T)
@@ -530,13 +530,13 @@ RoH_FR_plink_500kb$FRoH <- RoH_FR_plink_500kb$KB/RoH_FR_plink_500kb$KB[RoH_FR_pl
 RoH_FR_plink_500kb <- subset(RoH_FR_plink_500kb, FID != "Pxx")
 RoH_FR_plink_500kb$Length <- RoH_FR_plink_500kb$KB/1000
 colnames(RoH_FR_plink_500kb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_FR_plink_500kb <- merge(RoH_FR_plink_500kb, Lizards, by.x = "Sample", by.y = "ID")
+RoH_FR_plink_500kb <- merge(RoH_FR_plink_500kb, Lizards_admix, by.x = "Sample", by.y = "ID")
 p_pl_FR_500kb_1 <- ggplot(RoH_FR_plink_500kb, aes(y = nRoH, x = Length, color=Origin)) +
-  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
+  geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   geom_text_repel(data = subset(RoH_FR_plink_500kb, Origin == "Int-FRA"), aes(label = Abbpop), color="black") +
   theme_bw()
 p_pl_FR_500kb_2 <- ggplot(RoH_FR_plink_500kb, aes(y = FRoH, x = Origin, color=Origin)) +
-  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
+  geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.35) + theme_bw()
 
 pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/HetRoH_Supp_V1.pdf", height=10, width=14, useDingbats = F)
@@ -609,7 +609,7 @@ RoH_FR_plink_500kb %>%
 
 # 2.2 ROHs ----
 # 2.2.1 BCF tools ----
-Ita_BCF <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen//roh.pseudo.qual.IT.2Mb", h=F)
+Ita_BCF <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/roh.pseudo.qual.IT.2Mb", h=F)
 
 # Naming the columns
 Ita_BCF <- Ita_BCF %>%
@@ -1341,53 +1341,12 @@ pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/PositionHigh.pdf", height=6, wi
 print(p_RefSeq+p_Tiberius+ p_Ensemble)
 dev.off()
 
-### Now same with overlapping variants:
-
-# ---- 2. Read VCF (skip header lines starting with ##) ----
-vcf <- read.table("Y:/Projects/UKwallies/scripts/shared_sites_RefSeq_Tiberius_renamed.vcf.gz", comment.char = "#", header = FALSE)
-
-# Extract relevant columns
-colnames(vcf)[1:2] <- c("chr", "pos")
-vcf <- vcf[, c("chr", "pos")]
-
-# ---- 3. Plot ----
-p_RefSeqTib <- ggplot() + geom_segment(data = chrom, aes(x = start, xend = end, y = chr, yend = chr), size = 3, color = "grey70") + 
-  geom_point(data = vcf, aes(x = pos, y = chr), size = 2, alpha = 0.7, color = "red") +
-  theme_bw() + ggtitle("RefSeq_Tiberius (N=127)") + labs(x = "Genomic position", y = "Chromosome") + theme(panel.grid = element_blank())
-
-
-# ---- 2. Read VCF (skip header lines starting with ##) ----
-vcf <- read.table("Y:/Projects/UKwallies/scripts/shared_sites_renamed.vcf.gz", comment.char = "#", header = FALSE)
-
-# Extract relevant columns
-colnames(vcf)[1:2] <- c("chr", "pos")
-vcf <- vcf[, c("chr", "pos")]
-
-# ---- 3. Plot ----
-p_RefSeqEns <- ggplot() + geom_segment(data = chrom, aes(x = start, xend = end, y = chr, yend = chr), size = 3, color = "grey70") + 
-  geom_point(data = vcf, aes(x = pos, y = chr), size = 2, alpha = 0.7, color = "red") +
-  theme_bw() + ggtitle("RefSeq_Ensemble (N=100)") + labs(x = "Genomic position", y = "Chromosome") + theme(panel.grid = element_blank())
-
-print(p_RefSeqTib+p_RefSeqEns)
-
-
-
-
-
-
-
-########## Everything below is not needed!
-
-
-
-
 
 ## Genetic load (RefSeq High impact variants; N=382)
 
-
 ###
 ### Genetic load (i.e., High impact variants)
-High_alleles <- read.table("Y:/Projects/UKwallies/Purging/Polarised_Impacts_NCBI/genotypes_high.tsv", h=T)
+High_alleles <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/RefSeq_genotypes_high.tsv", h=T)
 sample_cols <- colnames(High_alleles)[3:ncol(High_alleles)]
 
 # Initialize a results data frame
@@ -1422,7 +1381,8 @@ for (s in sample_cols) {
 
 # View the summary
 tt(results)
-Lizards <- readWorkbook("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Samples_Santiago.xlsx", sheet = 2)
+write.csv(results, "C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/Load_per_individual.csv")
+Lizards <- readWorkbook("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Samples_Info.xlsx", sheet = 2)
 results <- merge(results, Lizards, by.x="Sample", by.y="ID")
 
 # Summarize by Origin
@@ -1436,6 +1396,7 @@ summary_origin <- results %>%
   )
 
 tt(summary_origin)
+write.csv(summary_origin, "C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/Load_per_origin.csv")
 
 # Summarize by Abbpop
 summary_abb <- results %>%
@@ -1448,83 +1409,4 @@ summary_abb <- results %>%
   )
 
 tt(summary_abb)
-
-#############
-#### NE estimation
-#############
-
-# ------------------------------
-# 1. Read bcftools ROH file
-# ------------------------------
-roh <- read.table("Y:/Projects/UKwallies/Results_RoH_Het_FR/roh.pseudo.qual",
-                  header = FALSE,
-                  comment.char = "#",
-                  stringsAsFactors = FALSE)
-
-# Assign column names based on your file
-colnames(roh) <- c("RG", "IND", "CHR", "START", "END",
-                   "LENGTH_BP", "NSNP", "QUAL")
-
-# Convert length to Mb
-roh$MB <- roh$LENGTH_BP / 1e6
-
-# Remove dummy sample
-roh <- subset(roh, IND != "Pxx_Hz")
-roh <- subset(roh, MB >= 0.1)
-
-
-# ------------------------------
-# 2. Define ROH bins (Mb)
-# ------------------------------
-bins <- c(0.1, 0.5, 1, 2, 4, 8, 16)
-
-roh$bin <- cut(roh$MB, breaks = bins, include.lowest = TRUE, right = FALSE)
-
-# ------------------------------
-# 3. Summarise per individual + bin
-# ------------------------------
-roh_summary <- roh %>%
-  group_by(IND, bin) %>%
-  summarise(total_MB = sum(MB), .groups = "drop")
-
-# ------------------------------
-# 4. Genome length (adjust!)
-# ------------------------------
-genome_length <- 1400  # Mb (change for your species)
-
-roh_summary$fROH <- roh_summary$total_MB / genome_length
-
-# ------------------------------
-# 5. Compute bin midpoints automatically
-# ------------------------------
-# Extract numeric bin limits
-get_midpoint <- function(bin_label) {
-  nums <- as.numeric(unlist(regmatches(bin_label, gregexpr("[0-9.]+", bin_label))))
-  mean(nums)
-}
-
-roh_summary$mid_MB <- sapply(as.character(roh_summary$bin), get_midpoint)
-
-# ------------------------------
-# 6. Convert to generations
-# ------------------------------
-roh_summary$T_gen <- 100 / (2 * roh_summary$mid_MB)
-
-# ------------------------------
-# 7. Estimate Ne
-# ------------------------------
-roh_summary$Ne <- 1 / (2 * roh_summary$fROH)
-roh_summary <- merge(roh_summary, LizardsData, by.x="IND", by.y="ID")
-
-# ------------------------------
-# 8. Plot (per individual)
-# ------------------------------
-ggplot(roh_summary, aes(x = T_gen, y = Ne, color = Group, group = IND)) +
-  geom_line() +
-  geom_point() +
-  scale_color_manual(values= c("#6BCBDA","#0673B3")) +
-  scale_x_reverse() +
-  labs(x = "Generations ago", y = "Estimated Ne") +
-  theme_minimal()
-
-
+write.csv(summary_abb, "C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/Load_per_abbpop.csv")
