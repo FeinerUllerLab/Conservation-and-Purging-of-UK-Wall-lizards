@@ -246,7 +246,7 @@ plot(cv_error) # Best supported K = 2 , 3 and 4
 
 # Load Admix data and merge with organized population data 
 
-Lizards_admix<- readWorkbook("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Samples_Santiago.xlsx", sheet = 3)
+Lizards_admix<- readWorkbook("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Samples_Info.xlsx", sheet = 3)
 K2<- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/K2_Final.Q", header=F)
 K3<- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/K3_Final.Q", header=F)
 K4<- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/K4_Final.Q", header=F)
