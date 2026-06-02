@@ -13,10 +13,10 @@
 
 ### To obtain Runs of Homozygosity using bcftools and plink and calculate the FROH for each sample (inbreeding coefficient)
 
-VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_Italian_final.vcf.gz
+VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_Central-Italy_final.vcf.gz
 
-mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_IT/plink
-cd /home/feiner/Projects/UKwallies/Results_RoH_Het_IT/plink
+mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_C-ITA/plink
+cd /home/feiner/Projects/UKwallies/Results_RoH_Het_C-ITA/plink
 
 #### PLINK
 plink --vcf ${VCF}_pseudo \
@@ -30,7 +30,7 @@ plink --vcf ${VCF}_pseudo \
       --homozyg-window-missing 5 \
       --homozyg-window-het 2 \
       --homozyg-window-threshold 0.05\
-      --out froh_summary_plink_IT_2Mb
+      --out froh_summary_plink_C-ITA_2Mb
 
 plink --vcf ${VCF}_pseudo \
       --aec \
@@ -43,5 +43,5 @@ plink --vcf ${VCF}_pseudo \
       --homozyg-window-missing 5 \
       --homozyg-window-het 2 \
       --homozyg-window-threshold 0.05\
-      --out froh_summary_plink_IT_500kb
+      --out froh_summary_plink_C-ITA_500kb
 

@@ -19,17 +19,17 @@ export PATH=/data/biosoftware/bcftools/bcftools-1.21/:$PATH
 
 # VCF file with variant and invariant sites needs to be declared; this has been filtered to exclude sites with any missing genotypes and is used for RoH estimation
 
-VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_Italian_final.vcf.gz
+VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_Central-Italy_final.vcf.gz
 
 # A file with the samples' names needs to be declared (incl. outgroup)
-samples_list=/home/feiner/Projects/UKwallies/scripts/Italian_samples
+samples_list=/home/feiner/Projects/UKwallies/scripts/C-ITA_samples
 
 # The size cut-off for RoH is declared
 RoH_size_num=500000
 RoH_size_nam=500kb
 
-mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_IT/500kb
-cd /home/feiner/Projects/UKwallies/Results_RoH_Het_IT/500kb
+mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_C-ITA/500kb
+cd /home/feiner/Projects/UKwallies/Results_RoH_Het_C-ITA/500kb
 
 #### Add a fictitious fully homozygous sample (Ppi_Hz) to calculate the length of the homozygous genome
 # copy the header
@@ -50,7 +50,7 @@ awk -v minsize="$RoH_size_num" '$6 > minsize' roh.pseudo.qual > roh.pseudo.qual.
 #### Calculate FRoH for each sample: (sum of ROHs > minsize)/(length of homozygous genome) and export relevant data
 #Calculate length of the homozygous genome
 homlength=$(grep "Pxx_Hz" roh.pseudo.qual.${RoH_size_nam} | awk '{sum += $6} END {print sum}')
-out="froh_summary_bcftools_IT_${RoH_size_nam}.txt"
+out="froh_summary_bcftools_C-ITA_${RoH_size_nam}.txt"
 echo -e "Sample\tFRoH\tLength\tnRoH" > "$out"
 while read -r sample; do
     [ -z "$sample" ] && continue

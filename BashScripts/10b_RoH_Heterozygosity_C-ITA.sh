@@ -19,17 +19,17 @@ export PATH=/data/biosoftware/bcftools/bcftools-1.21/:$PATH
 
 # VCF file with variant and invariant sites needs to be declared; this has been filtered to exclude sites with any missing genotypes and is used for RoH estimation
 
-VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_French_final.vcf.gz
+VCF=/home/feiner/Projects/UKwallies/Datasets/AllSites_VCFs/All_Central-Italy_final.vcf.gz
 
 # A file with the samples' names needs to be declared (incl. outgroup)
-samples_list=/home/feiner/Projects/UKwallies/scripts/French_samples
+samples_list=/home/feiner/Projects/UKwallies/scripts/C-ITA_samples
 
 # The size cut-off for RoH is declared
 RoH_size_num=2000000
 RoH_size_nam=2Mb
 
-mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_FR
-cd /home/feiner/Projects/UKwallies/Results_RoH_Het_FR
+mkdir -p /home/feiner/Projects/UKwallies/Results_RoH_Het_C-ITA
+cd /home/feiner/Projects/UKwallies/Results_RoH_Het_C-ITA
 
 #### Add a fictitious fully homozygous sample (Ppi_Hz) to calculate the length of the homozygous genome
 # copy the header
@@ -45,21 +45,21 @@ cd /home/feiner/Projects/UKwallies/Results_RoH_Het_FR
 #bcftools roh ${VCF}_pseudo -e ${samples_list} -G 30 -O r -o roh.pseudo
 # quality filters: Phred score > 50 & length > 1 Mb
 #cat roh.pseudo | awk '$8 > 50' > roh.pseudo.qual
-awk -v minsize="$RoH_size_num" '$6 > minsize' roh.pseudo.qual > roh.pseudo.qual.FR.${RoH_size_nam}
+awk -v minsize="$RoH_size_num" '$6 > minsize' roh.pseudo.qual > roh.pseudo.qual.C-ITA.${RoH_size_nam}
 
 #### Calculate FRoH for each sample: (sum of ROHs > minsize)/(length of homozygous genome) and export relevant data
 #Calculate length of the homozygous genome
-homlength=$(grep "Pxx_Hz" roh.pseudo.qual.FR.${RoH_size_nam} | awk '{sum += $6} END {print sum}')
-out="froh_summary_bcftools_FR_${RoH_size_nam}.txt"
+homlength=$(grep "Pxx_Hz" roh.pseudo.qual.C-ITA.${RoH_size_nam} | awk '{sum += $6} END {print sum}')
+out="froh_summary_bcftools_C-ITA_${RoH_size_nam}.txt"
 echo -e "Sample\tFRoH\tLength\tnRoH" > "$out"
 while read -r sample; do
     [ -z "$sample" ] && continue
 
     # Sum of ROH lengths for this sample
-    sum=$(awk -v s="$sample" '$2 == s {total += $6} END {print total+0}' roh.pseudo.qual.FR.${RoH_size_nam})
+    sum=$(awk -v s="$sample" '$2 == s {total += $6} END {print total+0}' roh.pseudo.qual.C-ITA.${RoH_size_nam})
 
     # Count number of ROH segments for this sample
-    count=$(awk -v s="$sample" '$2 == s {n++} END {print n+0}' roh.pseudo.qual.FR.${RoH_size_nam})
+    count=$(awk -v s="$sample" '$2 == s {n++} END {print n+0}' roh.pseudo.qual.C-ITA.${RoH_size_nam})
 
     # Calculate FROH
     ratio=$(awk -v a="$sum" -v b="$homlength" 'BEGIN {
@@ -75,7 +75,7 @@ done < "$samples_list"
 #plink -bfile final.all.plink -aec --double-id --missing --out miss
 
 #collect output in one file
-#Het_sum_geno="heterozygosity_summary_genomewide_FR.tsv"
+#Het_sum_geno="heterozygosity_summary_genomewide_C-ITA.tsv"
 #echo -e "Sample\tNumberVariableSites\tObservedHomozygous\tMissingSites\tGenotypedSites" > "$Het_sum_geno"
 #paste \
 #  <(awk 'NR>1 {print $1 "\t" $5 "\t" $3}' het.het) \
@@ -87,7 +87,7 @@ echo "Summary written to $Het_sum_geno"
 #### Heterozygosity - outside of RoHs for each individual
 # Continue with the output of BCFTOOLS to identify RoHs for each individual (create .bed file) and use this to exclude from plink het step
 
-ROH="roh.pseudo.qual.FR.${RoH_size_nam}"
+ROH="roh.pseudo.qual.C-ITA.${RoH_size_nam}"
 
 # 1) Create empty BED files for all samples
 while read -r sample; do
@@ -120,7 +120,7 @@ cat ${samples_list} | parallel -j 6 \
 'plink -bfile final.all.plink -aec --double-id --exclude range RoH_position_{}.bed --missing --out miss_{}'
 
 # Then collect sample-specific data from all generated Plink outputs
-Het_sum_nonRoH="heterozygosity_summary_nonRoH_FR_${RoH_size_nam}.tsv"
+Het_sum_nonRoH="heterozygosity_summary_nonRoH_C-ITA_${RoH_size_nam}.tsv"
 echo -e "Sample\tNumberVariableSites\tObservedHomozygous\tMissingSites\tGenotypedSites" > "$Het_sum_nonRoH"
 
 while read -r sample; do

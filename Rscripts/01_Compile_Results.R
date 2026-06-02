@@ -63,7 +63,7 @@ map_overview <- ggplot(data = europe_cropped) +
   labs(subtitle = "A") +
   theme(panel.background = element_rect(fill = "aliceblue"), panel.border = element_rect(colour = "black", fill=NA, linewidth=0.25))
 
-#France + Italy
+# W-EUR + C-ITA
 map_native <- ggplot(data = europe_cropped_native) +
   geom_sf(fill = "white", color = "grey", size=0.1) +
   geom_sf(data = st_crop(Pmur_dist, xmin = -5, xmax = 14, ymin = 41, ymax = 49), fill = "lightgrey", color = NA) +
@@ -295,24 +295,24 @@ dev.off()
 
 ## 2.1. HETEROZYGOSITY + ROH ----
 
-RoH_IT <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_IT_2Mb.txt", header = T)
-RoH_IT <- merge(RoH_IT, Lizards_admix, by.x = "Sample", by.y = "ID")
+RoH_C_ITA <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_C-ITA_2Mb.txt", header = T)
+RoH_C_ITA <- merge(RoH_C_ITA, Lizards_admix, by.x = "Sample", by.y = "ID")
 
-geno_Het_IT <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_genomewide_IT.tsv", header = T)
-geno_Het_IT$O.HET <- geno_Het_IT$NumberVariableSites-geno_Het_IT$ObservedHomozygous
-geno_Het_IT$geno_F.HET <- geno_Het_IT$O.HET/(geno_Het_IT$GenotypedSites-geno_Het_IT$MissingSites)
-geno_Het_IT <- geno_Het_IT[,-(2:6)]
-RoH_HET_IT <- merge(RoH_IT, geno_Het_IT, by = "Sample")
+geno_Het_C_ITA <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_genomewide_C-ITA.tsv", header = T)
+geno_Het_C_ITA$O.HET <- geno_Het_C_ITA$NumberVariableSites-geno_Het_C_ITA$ObservedHomozygous
+geno_Het_C_ITA$geno_F.HET <- geno_Het_C_ITA$O.HET/(geno_Het_C_ITA$GenotypedSites-geno_Het_C_ITA$MissingSites)
+geno_Het_C_ITA <- geno_Het_C_ITA[,-(2:6)]
+RoH_HET_C_ITA <- merge(RoH_C_ITA, geno_Het_C_ITA, by = "Sample")
 
-nonRoH_Het_IT <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_nonRoH_IT_2Mb.tsv", header = T)
-nonRoH_Het_IT$O.HET <- nonRoH_Het_IT$NumberVariableSites-nonRoH_Het_IT$ObservedHomozygous
-nonRoH_Het_IT$nonRoH_F.HET <- nonRoH_Het_IT$O.HET/(nonRoH_Het_IT$GenotypedSites-nonRoH_Het_IT$MissingSites)
-nonRoH_Het_IT$TotalNumberSites <- nonRoH_Het_IT$GenotypedSites-nonRoH_Het_IT$MissingSites
-nonRoH_Het_IT <- nonRoH_Het_IT[,-c(2:6,8)]
-RoH_Het_IT <- merge(RoH_HET_IT, nonRoH_Het_IT, by = "Sample")
-RoH_Het_IT$IDRisk <- RoH_Het_IT$FRoH*RoH_Het_IT$nonRoH_F.HET*1000
+nonRoH_Het_C_ITA <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_nonRoH_C-ITA_2Mb.tsv", header = T)
+nonRoH_Het_C_ITA$O.HET <- nonRoH_Het_C_ITA$NumberVariableSites-nonRoH_Het_C_ITA$ObservedHomozygous
+nonRoH_Het_C_ITA$nonRoH_F.HET <- nonRoH_Het_C_ITA$O.HET/(nonRoH_Het_C_ITA$GenotypedSites-nonRoH_Het_C_ITA$MissingSites)
+nonRoH_Het_C_ITA$TotalNumberSites <- nonRoH_Het_C_ITA$GenotypedSites-nonRoH_Het_C_ITA$MissingSites
+nonRoH_Het_C_ITA <- nonRoH_Het_C_ITA[,-c(2:6,8)]
+RoH_Het_C_ITA <- merge(RoH_HET_C_ITA, nonRoH_Het_C_ITA, by = "Sample")
+RoH_Het_C_ITA$IDRisk <- RoH_Het_C_ITA$FRoH*RoH_Het_C_ITA$nonRoH_F.HET*1000
 
-RoH_Het_IT %>%
+RoH_Het_C_ITA %>%
   group_by(Origin) %>%
   summarise(
     mean_het   = mean(geno_F.HET, na.rm = TRUE),
@@ -325,23 +325,23 @@ RoH_Het_IT %>%
     n          = n()
   )
 
-p1 <- ggplot(RoH_HET_IT, aes(y = geno_F.HET, x = Origin, color=Origin)) +
+p1 <- ggplot(RoH_HET_C_ITA, aes(y = geno_F.HET, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0.001,0.0045) + theme_bw()
-p2 <- ggplot(RoH_Het_IT, aes(y = nRoH, x = Length, color=Origin)) +
+p2 <- ggplot(RoH_Het_C_ITA, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
-  geom_text_repel(data = subset(RoH_Het_IT, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_Het_C_ITA, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
   theme_bw()
-p3 <- ggplot(RoH_HET_IT, aes(y = FRoH, x = Origin, color=Origin)) +
+p3 <- ggplot(RoH_HET_C_ITA, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.125) + theme_bw()
-p1RISK <- ggplot(RoH_Het_IT, aes(y = nonRoH_F.HET, x = FRoH, color=IDRisk)) +
+p1RISK <- ggplot(RoH_Het_C_ITA, aes(y = nonRoH_F.HET, x = FRoH, color=IDRisk)) +
   geom_point(size=3) + 
   scale_color_gradient2(
     low      = "#FFCE03",   # very light salmon
     mid      = "orange",   # medium pink‑red
     high     = "#de2d26",   # dark red
-    midpoint = median(RoH_Het_IT$IDRisk, na.rm = TRUE),   # or any value you choose
+    midpoint = median(RoH_Het_C_ITA$IDRisk, na.rm = TRUE),   # or any value you choose
     space    = "Lab"       # smoother perceptual interpolation
   ) +
   theme_bw() +theme(
@@ -350,25 +350,25 @@ p1RISK <- ggplot(RoH_Het_IT, aes(y = nonRoH_F.HET, x = FRoH, color=IDRisk)) +
     legend.box.just = "right",
     legend.margin = margin(6, 6, 6, 6))
 
-# Same for FR
-RoH_FR <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_FR_2Mb.txt", header = T)
-RoH_FR <- merge(RoH_FR, Lizards_admix, by.x = "Sample", by.y = "ID")
+# Same for W-EUR
+RoH_W_EUR <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_W-EUR_2Mb.txt", header = T)
+RoH_W_EUR <- merge(RoH_W_EUR, Lizards_admix, by.x = "Sample", by.y = "ID")
 
-geno_Het_FR <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_genomewide_FR.tsv", header = T)
-geno_Het_FR$O.HET <- geno_Het_FR$NumberVariableSites-geno_Het_FR$ObservedHomozygous
-geno_Het_FR$geno_F.HET <- geno_Het_FR$O.HET/(geno_Het_FR$GenotypedSites-geno_Het_FR$MissingSites)
-geno_Het_FR <- geno_Het_FR[,-(2:6)]
-RoH_HET_FR <- merge(RoH_FR, geno_Het_FR, by = "Sample")
+geno_Het_W_EUR <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_genomewide_W-EUR.tsv", header = T)
+geno_Het_W_EUR$O.HET <- geno_Het_W_EUR$NumberVariableSites-geno_Het_W_EUR$ObservedHomozygous
+geno_Het_W_EUR$geno_F.HET <- geno_Het_W_EUR$O.HET/(geno_Het_W_EUR$GenotypedSites-geno_Het_W_EUR$MissingSites)
+geno_Het_W_EUR <- geno_Het_W_EUR[,-(2:6)]
+RoH_HET_W_EUR <- merge(RoH_W_EUR, geno_Het_W_EUR, by = "Sample")
 
-nonRoH_Het_FR <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_nonRoH_FR_2Mb.tsv", header = T)
-nonRoH_Het_FR$O.HET <- nonRoH_Het_FR$NumberVariableSites-nonRoH_Het_FR$ObservedHomozygous
-nonRoH_Het_FR$nonRoH_F.HET <- nonRoH_Het_FR$O.HET/(nonRoH_Het_FR$GenotypedSites-nonRoH_Het_FR$MissingSites)
-nonRoH_Het_FR$TotalNumberSites <- nonRoH_Het_FR$GenotypedSites-nonRoH_Het_FR$MissingSites
-nonRoH_Het_FR <- nonRoH_Het_FR[,-c(2:6,8)]
-RoH_Het_FR <- merge(RoH_HET_FR, nonRoH_Het_FR, by = "Sample")
-RoH_Het_FR$IDRisk <- RoH_Het_FR$FRoH*RoH_Het_FR$nonRoH_F.HET*1000
+nonRoH_Het_W_EUR <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/heterozygosity_summary_nonRoH_W-EUR_2Mb.tsv", header = T)
+nonRoH_Het_W_EUR$O.HET <- nonRoH_Het_W_EUR$NumberVariableSites-nonRoH_Het_W_EUR$ObservedHomozygous
+nonRoH_Het_W_EUR$nonRoH_F.HET <- nonRoH_Het_W_EUR$O.HET/(nonRoH_Het_W_EUR$GenotypedSites-nonRoH_Het_W_EUR$MissingSites)
+nonRoH_Het_W_EUR$TotalNumberSites <- nonRoH_Het_W_EUR$GenotypedSites-nonRoH_Het_W_EUR$MissingSites
+nonRoH_Het_W_EUR <- nonRoH_Het_W_EUR[,-c(2:6,8)]
+RoH_Het_W_EUR <- merge(RoH_HET_W_EUR, nonRoH_Het_W_EUR, by = "Sample")
+RoH_Het_W_EUR$IDRisk <- RoH_Het_W_EUR$FRoH*RoH_Het_W_EUR$nonRoH_F.HET*1000
 
-RoH_Het_FR %>%
+RoH_Het_W_EUR %>%
   group_by(Origin) %>%
   summarise(
     mean_het   = mean(geno_F.HET, na.rm = TRUE),
@@ -381,23 +381,23 @@ RoH_Het_FR %>%
     n          = n()
   )
 
-p4 <- ggplot(RoH_HET_FR, aes(y = geno_F.HET, x = Origin, color=Origin)) +
+p4 <- ggplot(RoH_HET_W_EUR, aes(y = geno_F.HET, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0.001,0.0045) + theme_bw()
-p5 <- ggplot(RoH_Het_FR, aes(y = nRoH, x = Length, color=Origin)) +
+p5 <- ggplot(RoH_Het_W_EUR, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
-  geom_text_repel(data = subset(RoH_Het_FR, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_Het_W_EUR, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
   theme_bw()
-p6 <- ggplot(RoH_HET_FR, aes(y = FRoH, x = Origin, color=Origin)) +
+p6 <- ggplot(RoH_HET_W_EUR, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.125) + theme_bw()
-p2RISK <- ggplot(RoH_Het_FR, aes(y = nonRoH_F.HET, x = FRoH, color=IDRisk)) +
+p2RISK <- ggplot(RoH_Het_W_EUR, aes(y = nonRoH_F.HET, x = FRoH, color=IDRisk)) +
   geom_point(size=3) + 
   scale_color_gradient2(
     low      = "#FFCE03",   # very light salmon
     mid      = "orange",   # medium pink‑red
     high     = "#de2d26",   # dark red
-    midpoint = median(RoH_Het_FR$IDRisk, na.rm = TRUE),   # or any value you choose
+    midpoint = median(RoH_Het_W_EUR$IDRisk, na.rm = TRUE),   # or any value you choose
     space    = "Lab"       # smoother perceptual interpolation
   ) +
   theme_bw() +theme(
@@ -413,23 +413,23 @@ dev.off()
 ### Statistics
 ## Heterozygosity
 # Wilcoxon test
-wilcox.test(geno_F.HET ~ Origin, data = RoH_HET_IT)
+wilcox.test(geno_F.HET ~ Origin, data = RoH_HET_C_ITA)
 # Cliff's delta
-cliff.delta(subset(RoH_HET_IT, Origin == "Nat-C-ITA")$geno_F.HET, subset(RoH_HET_IT, Origin == "Int-C-ITA")$geno_F.HET)
+cliff.delta(subset(RoH_HET_C_ITA, Origin == "Nat-C-ITA")$geno_F.HET, subset(RoH_HET_C_ITA, Origin == "Int-C-ITA")$geno_F.HET)
 # Wilcoxon test
-wilcox.test(geno_F.HET ~ Origin, data = RoH_HET_FR)
+wilcox.test(geno_F.HET ~ Origin, data = RoH_HET_W_EUR)
 # Cliff's delta
-cliff.delta(subset(RoH_HET_FR, Origin == "Nat-W-EUR")$geno_F.HET, subset(RoH_HET_FR, Origin == "Int-W-EUR")$geno_F.HET)
+cliff.delta(subset(RoH_HET_W_EUR, Origin == "Nat-W-EUR")$geno_F.HET, subset(RoH_HET_W_EUR, Origin == "Int-W-EUR")$geno_F.HET)
 
 ## ROH Length
 # Length of ROHs comparison 
-Ita_BCF_model <- glmer(Length ~ Origin + (1 | Sample), 
+C_ITA_BCF_model <- glmer(Length ~ Origin + (1 | Sample), 
                        family = Gamma(link = "log"), 
-                       data = RoH_HET_FR)
-summary(Ita_BCF_model)
+                       data = RoH_HET_W_EUR)
+summary(C_ITA_BCF_model)
 
 # Get the proportion of the effect 
-exp(fixef(Ita_BCF_model)[-1]) #  ~ meaning 0.7X difference.
+exp(fixef(C_ITA_BCF_model)[-1]) #  ~ meaning 0.7X difference.
 
 # Confidence intervals for the model 
 # Function for bootstrapping 1000 replicates 
@@ -446,98 +446,98 @@ get_boot_ci <- function(model, term, nsim = 1000) {
 }
 
 ## FROH
-wilcox.test(FRoH ~ Origin, data = RoH_HET_IT)
-wilcox.test(FRoH ~ Origin, data = RoH_HET_FR)
+wilcox.test(FRoH ~ Origin, data = RoH_HET_C_ITA)
+wilcox.test(FRoH ~ Origin, data = RoH_HET_W_EUR)
 
 #####
 # ROH for Supplements (Plink + different length)
 #####
 
-RoH_IT_Supp <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_IT_500kb.txt", header = T)
-RoH_IT_Supp <- merge(RoH_IT_Supp, Lizards_admix, by.x = "Sample", by.y = "ID")
-RoH_IT_Supp$Length <- RoH_IT_Supp$Length/1000000
-p1S <- ggplot(RoH_IT_Supp, aes(y = nRoH, x = Length, color=Origin)) +
+RoH_C_ITA_Supp <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_C-ITA_500kb.txt", header = T)
+RoH_C_ITA_Supp <- merge(RoH_C_ITA_Supp, Lizards_admix, by.x = "Sample", by.y = "ID")
+RoH_C_ITA_Supp$Length <- RoH_C_ITA_Supp$Length/1000000
+p1S <- ggplot(RoH_C_ITA_Supp, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
-  geom_text_repel(data = subset(RoH_IT_Supp, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_C_ITA_Supp, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
   theme_bw()
-p2S <- ggplot(RoH_IT_Supp, aes(y = FRoH, x = Origin, color=Origin)) +
+p2S <- ggplot(RoH_C_ITA_Supp, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.31) + theme_bw()
 
-RoH_FR_Supp <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_FR_500kb.txt", header = T)
-RoH_FR_Supp <- merge(RoH_FR_Supp, Lizards_admix, by.x = "Sample", by.y = "ID")
-RoH_FR_Supp$Length <- RoH_FR_Supp$Length/1000000
-p3S <- ggplot(RoH_FR_Supp, aes(y = nRoH, x = Length, color=Origin)) +
+RoH_W_EUR_Supp <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_bcftools_W-EUR_500kb.txt", header = T)
+RoH_W_EUR_Supp <- merge(RoH_W_EUR_Supp, Lizards_admix, by.x = "Sample", by.y = "ID")
+RoH_W_EUR_Supp$Length <- RoH_W_EUR_Supp$Length/1000000
+p3S <- ggplot(RoH_W_EUR_Supp, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
-  geom_text_repel(data = subset(RoH_FR_Supp, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_W_EUR_Supp, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
   theme_bw()
-p4S <- ggplot(RoH_FR_Supp, aes(y = FRoH, x = Origin, color=Origin)) +
+p4S <- ggplot(RoH_W_EUR_Supp, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.31) + theme_bw()
 
-RoH_IT_plink_2Mb<- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_IT_2Mb.hom.indiv", header = T)
-RoH_IT_plink_2Mb$FRoH <- RoH_IT_plink_2Mb$KB/RoH_IT_plink_2Mb$KB[RoH_IT_plink_2Mb$FID == "Pxx"]
-RoH_IT_plink_2Mb <- subset(RoH_IT_plink_2Mb, FID != "Pxx")
-RoH_IT_plink_2Mb$Length <- RoH_IT_plink_2Mb$KB/1000
-colnames(RoH_IT_plink_2Mb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_IT_plink_2Mb <- merge(RoH_IT_plink_2Mb, Lizards_admix, by.x = "Sample", by.y = "ID")
-p_pl_IT_2Mb_1 <- ggplot(RoH_IT_plink_2Mb, aes(y = nRoH, x = Length, color=Origin)) +
+RoH_C_ITA_plink_2Mb<- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_C-ITA_2Mb.hom.indiv", header = T)
+RoH_C_ITA_plink_2Mb$FRoH <- RoH_C_ITA_plink_2Mb$KB/RoH_C_ITA_plink_2Mb$KB[RoH_C_ITA_plink_2Mb$FID == "Pxx"]
+RoH_C_ITA_plink_2Mb <- subset(RoH_C_ITA_plink_2Mb, FID != "Pxx")
+RoH_C_ITA_plink_2Mb$Length <- RoH_C_ITA_plink_2Mb$KB/1000
+colnames(RoH_C_ITA_plink_2Mb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
+RoH_C_ITA_plink_2Mb <- merge(RoH_C_ITA_plink_2Mb, Lizards_admix, by.x = "Sample", by.y = "ID")
+p_pl_C_ITA_2Mb_1 <- ggplot(RoH_C_ITA_plink_2Mb, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
-  geom_text_repel(data = subset(RoH_IT_plink_2Mb, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_C_ITA_plink_2Mb, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
   theme_bw()
-p_pl_IT_2Mb_2 <- ggplot(RoH_IT_plink_2Mb, aes(y = FRoH, x = Origin, color=Origin)) +
+p_pl_C_ITA_2Mb_2 <- ggplot(RoH_C_ITA_plink_2Mb, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.18) + theme_bw()
 
-RoH_FR_plink_2Mb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_FR_2Mb.hom.indiv", header = T)
-RoH_FR_plink_2Mb$FRoH <- RoH_FR_plink_2Mb$KB/RoH_FR_plink_2Mb$KB[RoH_FR_plink_2Mb$FID == "Pxx"]
-RoH_FR_plink_2Mb <- subset(RoH_FR_plink_2Mb, FID != "Pxx")
-RoH_FR_plink_2Mb$Length <- RoH_FR_plink_2Mb$KB/1000
-colnames(RoH_FR_plink_2Mb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_FR_plink_2Mb <- merge(RoH_FR_plink_2Mb, Lizards_admix, by.x = "Sample", by.y = "ID")
-p_pl_FR_2Mb_1 <- ggplot(RoH_FR_plink_2Mb, aes(y = nRoH, x = Length, color=Origin)) +
+RoH_W_EUR_plink_2Mb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_W-EUR_2Mb.hom.indiv", header = T)
+RoH_W_EUR_plink_2Mb$FRoH <- RoH_W_EUR_plink_2Mb$KB/RoH_W_EUR_plink_2Mb$KB[RoH_W_EUR_plink_2Mb$FID == "Pxx"]
+RoH_W_EUR_plink_2Mb <- subset(RoH_W_EUR_plink_2Mb, FID != "Pxx")
+RoH_W_EUR_plink_2Mb$Length <- RoH_W_EUR_plink_2Mb$KB/1000
+colnames(RoH_W_EUR_plink_2Mb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
+RoH_W_EUR_plink_2Mb <- merge(RoH_W_EUR_plink_2Mb, Lizards_admix, by.x = "Sample", by.y = "ID")
+p_pl_W_EUR_2Mb_1 <- ggplot(RoH_W_EUR_plink_2Mb, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
-  geom_text_repel(data = subset(RoH_FR_plink_2Mb, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_W_EUR_plink_2Mb, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
   theme_bw()
-p_pl_FR_2Mb_2 <- ggplot(RoH_FR_plink_2Mb, aes(y = FRoH, x = Origin, color=Origin)) +
+p_pl_W_EUR_2Mb_2 <- ggplot(RoH_W_EUR_plink_2Mb, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.18) + theme_bw()
 
-RoH_IT_plink_500kb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_IT_500kb.hom.indiv", header = T)
-RoH_IT_plink_500kb$FRoH <- RoH_IT_plink_500kb$KB/RoH_IT_plink_500kb$KB[RoH_IT_plink_500kb$FID == "Pxx"]
-RoH_IT_plink_500kb <- subset(RoH_IT_plink_500kb, FID != "Pxx")
-RoH_IT_plink_500kb$Length <- RoH_IT_plink_500kb$KB/1000
-colnames(RoH_IT_plink_500kb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_IT_plink_500kb <- merge(RoH_IT_plink_500kb, Lizards_admix, by.x = "Sample", by.y = "ID")
-p_pl_IT_500kb_1 <- ggplot(RoH_IT_plink_500kb, aes(y = nRoH, x = Length, color=Origin)) +
+RoH_C_ITA_plink_500kb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_C-ITA_500kb.hom.indiv", header = T)
+RoH_C_ITA_plink_500kb$FRoH <- RoH_C_ITA_plink_500kb$KB/RoH_C_ITA_plink_500kb$KB[RoH_C_ITA_plink_500kb$FID == "Pxx"]
+RoH_C_ITA_plink_500kb <- subset(RoH_C_ITA_plink_500kb, FID != "Pxx")
+RoH_C_ITA_plink_500kb$Length <- RoH_C_ITA_plink_500kb$KB/1000
+colnames(RoH_C_ITA_plink_500kb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
+RoH_C_ITA_plink_500kb <- merge(RoH_C_ITA_plink_500kb, Lizards_admix, by.x = "Sample", by.y = "ID")
+p_pl_C_ITA_500kb_1 <- ggplot(RoH_C_ITA_plink_500kb, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
-  geom_text_repel(data = subset(RoH_IT_plink_500kb, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_C_ITA_plink_500kb, Origin == "Int-C-ITA"), aes(label = ID_alias), color="black") +
   theme_bw()
-p_pl_IT_500kb_2 <- ggplot(RoH_IT_plink_500kb, aes(y = FRoH, x = Origin, color=Origin)) +
+p_pl_C_ITA_500kb_2 <- ggplot(RoH_C_ITA_plink_500kb, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#6BCBDA","#0673B3")) + scale_fill_manual(values=c("#6BCBDA","#0673B3")) +
   ylim(0,0.35) + theme_bw()
 
-RoH_FR_plink_500kb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_FR_500kb.hom.indiv", header = T)
-RoH_FR_plink_500kb$FRoH <- RoH_FR_plink_500kb$KB/RoH_FR_plink_500kb$KB[RoH_FR_plink_500kb$FID == "Pxx"]
-RoH_FR_plink_500kb <- subset(RoH_FR_plink_500kb, FID != "Pxx")
-RoH_FR_plink_500kb$Length <- RoH_FR_plink_500kb$KB/1000
-colnames(RoH_FR_plink_500kb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
-RoH_FR_plink_500kb <- merge(RoH_FR_plink_500kb, Lizards_admix, by.x = "Sample", by.y = "ID")
-p_pl_FR_500kb_1 <- ggplot(RoH_FR_plink_500kb, aes(y = nRoH, x = Length, color=Origin)) +
+RoH_W_EUR_plink_500kb <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/froh_summary_plink_W-EUR_500kb.hom.indiv", header = T)
+RoH_W_EUR_plink_500kb$FRoH <- RoH_W_EUR_plink_500kb$KB/RoH_W_EUR_plink_500kb$KB[RoH_W_EUR_plink_500kb$FID == "Pxx"]
+RoH_W_EUR_plink_500kb <- subset(RoH_W_EUR_plink_500kb, FID != "Pxx")
+RoH_W_EUR_plink_500kb$Length <- RoH_W_EUR_plink_500kb$KB/1000
+colnames(RoH_W_EUR_plink_500kb) <- c("Sample","IID","PHE","nRoH","KB","KBAVG","FRoH","Length")
+RoH_W_EUR_plink_500kb <- merge(RoH_W_EUR_plink_500kb, Lizards_admix, by.x = "Sample", by.y = "ID")
+p_pl_W_EUR_500kb_1 <- ggplot(RoH_W_EUR_plink_500kb, aes(y = nRoH, x = Length, color=Origin)) +
   geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
-  geom_text_repel(data = subset(RoH_FR_plink_500kb, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
+  geom_text_repel(data = subset(RoH_W_EUR_plink_500kb, Origin == "Int-W-EUR"), aes(label = ID_alias), color="black") +
   theme_bw()
-p_pl_FR_500kb_2 <- ggplot(RoH_FR_plink_500kb, aes(y = FRoH, x = Origin, color=Origin)) +
+p_pl_W_EUR_500kb_2 <- ggplot(RoH_W_EUR_plink_500kb, aes(y = FRoH, x = Origin, color=Origin)) +
   geom_boxplot(aes(fill=Origin, alpha=0.8), show.legend = F) + geom_point(size=3, show.legend = F) + scale_color_manual(values=c("#EFE808","#DD6A27")) + scale_fill_manual(values=c("#EFE808","#DD6A27")) +
   ylim(0,0.35) + theme_bw()
 
 pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/HetRoH_Supp_V2.pdf", height=10, width=14, useDingbats = F)
 (p1S | p2S | p3S | p4S) /
-(p_pl_IT_2Mb_1 | p_pl_IT_2Mb_2 | p_pl_FR_2Mb_1 | p_pl_FR_2Mb_2) /
-(p_pl_IT_500kb_1 | p_pl_IT_500kb_2 | p_pl_FR_500kb_1 | p_pl_FR_500kb_2)
+(p_pl_C_ITA_2Mb_1 | p_pl_C_ITA_2Mb_2 | p_pl_W_EUR_2Mb_1 | p_pl_W_EUR_2Mb_2) /
+(p_pl_C_ITA_500kb_1 | p_pl_C_ITA_500kb_2 | p_pl_W_EUR_500kb_1 | p_pl_W_EUR_500kb_2)
 dev.off()
 
-RoH_IT_plink_2Mb %>%
+RoH_C_ITA_plink_2Mb %>%
   group_by(Origin) %>%
   summarise(
     mean_nRoH  = mean(nRoH, na.rm = TRUE),
@@ -547,7 +547,7 @@ RoH_IT_plink_2Mb %>%
     mean_Length = mean(Length, na.rm = TRUE),
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
-RoH_FR_plink_2Mb %>%
+RoH_W_EUR_plink_2Mb %>%
   group_by(Origin) %>%
   summarise(
     mean_nRoH  = mean(nRoH, na.rm = TRUE),
@@ -557,7 +557,7 @@ RoH_FR_plink_2Mb %>%
     mean_Length = mean(Length, na.rm = TRUE),
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
-RoH_IT_Supp %>%
+RoH_C_ITA_Supp %>%
   group_by(Origin) %>%
   summarise(
     mean_nRoH  = mean(nRoH, na.rm = TRUE),
@@ -567,7 +567,7 @@ RoH_IT_Supp %>%
     mean_Length = mean(Length, na.rm = TRUE),
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
-RoH_FR_Supp %>%
+RoH_W_EUR_Supp %>%
   group_by(Origin) %>%
   summarise(
     mean_nRoH  = mean(nRoH, na.rm = TRUE),
@@ -577,7 +577,7 @@ RoH_FR_Supp %>%
     mean_Length = mean(Length, na.rm = TRUE),
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
-RoH_IT_plink_500kb %>%
+RoH_C_ITA_plink_500kb %>%
   group_by(Origin) %>%
   summarise(
     mean_nRoH  = mean(nRoH, na.rm = TRUE),
@@ -587,7 +587,7 @@ RoH_IT_plink_500kb %>%
     mean_Length = mean(Length, na.rm = TRUE),
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
-RoH_FR_plink_500kb %>%
+RoH_W_EUR_plink_500kb %>%
   group_by(Origin) %>%
   summarise(
     mean_nRoH  = mean(nRoH, na.rm = TRUE),
@@ -603,20 +603,20 @@ RoH_FR_plink_500kb %>%
 
 # 2.2 ROHs ----
 # 2.2.1 BCF tools ----
-Ita_BCF <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/roh.pseudo.qual.IT.2Mb", h=F)
+C_ITA_BCF <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/roh.pseudo.qual.C-ITA.2Mb", h=F)
 
 # Naming the columns
-Ita_BCF <- Ita_BCF %>%
+C_ITA_BCF <- C_ITA_BCF %>%
   dplyr::select(-1) %>% # Remove the first column - a bunch of RG
   rename(ID = V2, CHR = V3, POS1 = V4, POS2 = V5, BP = V6, MARKERS = V7, QUALITY = V8) 
 
 # Merge the clean data with the origin
-Ita_BCF<- merge(Lizards_admix,Ita_BCF,by="ID", all.x=T)
-Ita_BCF <- Ita_BCF %>%
+C_ITA_BCF<- merge(Lizards_admix,C_ITA_BCF,by="ID", all.x=T)
+C_ITA_BCF <- C_ITA_BCF %>%
   filter(!grepl("W-EUR", Origin))
 
 # Define names  of chromosome names to  numbers
-Ita_BCF <- Ita_BCF %>%
+C_ITA_BCF <- C_ITA_BCF %>%
   mutate(CHR = case_when(
     CHR == "CM014743.1" ~ "1",
     CHR == "CM014744.1" ~ "2",
@@ -637,21 +637,21 @@ Ita_BCF <- Ita_BCF %>%
     CHR == "CM014759.1" ~ "17",
     CHR == "CM014760.1" ~ "18",))
 
-# French 
-Fra_BCF <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/roh.pseudo.qual.FR.2Mb",h=F)
+# W-EUR 
+W_EUR_BCF <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/PopGen/roh.pseudo.qual.W-EUR.2Mb",h=F)
 
 # Naming the columns and filtering for quality (Phred score) and minimum length (500k)
-Fra_BCF <- Fra_BCF %>%
+W_EUR_BCF <- W_EUR_BCF %>%
   dplyr::select(-1) %>% # Remove the first column - a bunch of RG
   rename(ID = V2, CHR = V3, POS1 = V4, POS2 = V5, BP = V6, MARKERS = V7, QUALITY = V8) 
 
 # Merge the clean data with the origin
-Fra_BCF<- merge(Lizards_admix,Fra_BCF,by="ID", all.x=T)
-Fra_BCF <- Fra_BCF %>%
+W_EUR_BCF<- merge(Lizards_admix,W_EUR_BCF,by="ID", all.x=T)
+W_EUR_BCF <- W_EUR_BCF %>%
   filter(!grepl("C-ITA", Origin))
 
 # Change chromosome names 
-Fra_BCF <- Fra_BCF %>%
+W_EUR_BCF <- W_EUR_BCF %>%
   mutate(CHR = case_when(
     CHR == "CM014743.1" ~ "1",
     CHR == "CM014744.1" ~ "2",
@@ -674,24 +674,24 @@ Fra_BCF <- Fra_BCF %>%
 
 
 # Positions in chr 1 
-Ita_BCF <- Ita_BCF %>%
+C_ITA_BCF <- C_ITA_BCF %>%
   mutate(CHR = factor(CHR, levels = sort(as.numeric(as.character(unique(CHR))))))
-Fra_BCF <- Fra_BCF %>%
+W_EUR_BCF <- W_EUR_BCF %>%
   mutate(CHR = factor(CHR, levels = sort(as.numeric(as.character(unique(CHR))))))
 
 # Filter for Chromosome 1
-Ita_BCF_chr1 <- Ita_BCF %>% filter(CHR == 1)
+C_ITA_BCF_chr1 <- C_ITA_BCF %>% filter(CHR == 1)
 
 # Get all unique IDs
-all_IDs <- unique(Ita_BCF$ID_alias)
+all_IDs <- unique(C_ITA_BCF$ID_alias)
 
 # Create a lookup table for Origin and Abbpop per ID
-ID_lookup <- Ita_BCF %>%
+ID_lookup <- C_ITA_BCF %>%
   dplyr::select(ID_alias, Origin, Abbpop) %>%
   distinct()
 
 # Fill missing IDs for Chr1, keeping Origin and Abbpop
-Ita_BCF_chr1_filled <- Ita_BCF_chr1 %>%
+C_ITA_BCF_chr1_filled <- C_ITA_BCF_chr1 %>%
   right_join(
     tibble(ID_alias = all_IDs),
     by = "ID_alias"
@@ -711,12 +711,12 @@ Ita_BCF_chr1_filled <- Ita_BCF_chr1 %>%
   dplyr::select(-Origin.lookup, -Abbpop.lookup)  # remove temporary columns
 
 # Reorder ID by Origin
-Ita_BCF_chr1_filled <- Ita_BCF_chr1_filled %>%
+C_ITA_BCF_chr1_filled <- C_ITA_BCF_chr1_filled %>%
   mutate(
     ID_alias = factor(ID_alias, levels = unique(ID_alias[order(Origin)])))
 
 # Plot only Chr 1
-chr1_IT <- ggplot(Ita_BCF_chr1_filled, aes(x=POS1, xend=POS2, y=ID_alias, color=as.factor(Origin))) +
+chr1_C_ITA <- ggplot(C_ITA_BCF_chr1_filled, aes(x=POS1, xend=POS2, y=ID_alias, color=as.factor(Origin))) +
   geom_segment(aes(yend=ID_alias), linewidth =3) +  
   scale_color_manual(values= c("Nat-C-ITA" = "#0673B3", "Int-C-ITA" = "#6BCBDA")) +
   scale_x_continuous(labels = scales::label_number(accuracy = 1), limits = c(0, 130727322)) +
@@ -730,18 +730,18 @@ chr1_IT <- ggplot(Ita_BCF_chr1_filled, aes(x=POS1, xend=POS2, y=ID_alias, color=
 ### same for France
 
 # Filter for Chromosome 1
-Fra_BCF_chr1 <- Fra_BCF %>% filter(CHR == 1)
+W_EUR_BCF_chr1 <- W_EUR_BCF %>% filter(CHR == 1)
 
 # Get all unique IDs
-all_IDs <- unique(Fra_BCF$ID_alias)
+all_IDs <- unique(W_EUR_BCF$ID_alias)
 
 # Create a lookup table for Origin and Abbpop per ID
-ID_lookup <- Fra_BCF %>%
+ID_lookup <- W_EUR_BCF %>%
   dplyr::select(ID_alias, Origin, Abbpop) %>%
   distinct()
 
 # Fill missing IDs for Chr1, keeping Origin and Abbpop
-Fra_BCF_chr1_filled <- Fra_BCF_chr1 %>%
+W_EUR_BCF_chr1_filled <- W_EUR_BCF_chr1 %>%
   right_join(
     tibble(ID_alias = all_IDs),
     by = "ID_alias"
@@ -761,11 +761,11 @@ Fra_BCF_chr1_filled <- Fra_BCF_chr1 %>%
   dplyr::select(-Origin.lookup, -Abbpop.lookup)  # remove temporary columns
 
 # Reorder ID by Origin
-Fra_BCF_chr1_filled <- Fra_BCF_chr1_filled %>%
+W_EUR_BCF_chr1_filled <- W_EUR_BCF_chr1_filled %>%
   mutate(ID_alias = factor(ID_alias, levels = unique(ID_alias[order(Origin)])))
 
 # Plot only Chr 1
-chr1_FR <- ggplot(Fra_BCF_chr1_filled, aes(x=POS1, xend=POS2, y=ID_alias, color=as.factor(Origin))) +
+chr1_W_EUR <- ggplot(W_EUR_BCF_chr1_filled, aes(x=POS1, xend=POS2, y=ID_alias, color=as.factor(Origin))) +
   geom_segment(aes(yend=ID_alias), linewidth =3) +  
   scale_color_manual(values= c("Nat-W-EUR" = "#DD6A27", "Int-W-EUR" = "#EFE808")) +
   scale_x_continuous(labels = scales::label_number(accuracy = 1), limits = c(0, 130727322)) +
@@ -778,7 +778,7 @@ chr1_FR <- ggplot(Fra_BCF_chr1_filled, aes(x=POS1, xend=POS2, y=ID_alias, color=
 
 
 pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/Chr1_V2.pdf", height=6, width=10, useDingbats = F)
-chr1_IT/chr1_FR
+chr1_C_ITA/chr1_W_EUR
 dev.off()
 
 ###########################
@@ -790,19 +790,19 @@ Other_IDRisk <- Other_IDRisk[c(2,6,7,11,24),c(1,5)]
 colnames(Other_IDRisk) <- c("Sample","IDRisk")
 Other_IDRisk$Origin <- "Lit"
 
-RoH_Het_IT <- RoH_Het_IT %>%
+RoH_Het_C_ITA <- RoH_Het_C_ITA %>%
   arrange(desc(IDRisk)) %>%  # sort by IDRisk descending
   mutate(Sample = factor(ID_alias, levels = ID_alias))
 
-RoH_Het_FR <- RoH_Het_FR %>%
+RoH_Het_W_EUR <- RoH_Het_W_EUR %>%
   arrange(desc(IDRisk)) %>%  # sort by IDRisk descending
   mutate(Sample = factor(ID_alias, levels = ID_alias))
 
-common_cols <- intersect(colnames(RoH_Het_IT), colnames(Other_IDRisk))
+common_cols <- intersect(colnames(RoH_Het_C_ITA), colnames(Other_IDRisk))
 
 df_combined <- rbind(
-  RoH_Het_IT[common_cols],
-  RoH_Het_FR[common_cols],
+  RoH_Het_C_ITA[common_cols],
+  RoH_Het_W_EUR[common_cols],
   Other_IDRisk[common_cols]
 )
 
@@ -818,13 +818,13 @@ dev.off()
 ###########################
 # 3. PURGING  -----
 ###########################
-# 3.1 Calculate Rxy for Italian-origin samples ----
+# 3.1 Calculate Rxy for C-ITA-origin samples ----
 
-# Load Italian Purging dataset - Relative frequencies and Jackknifing information
-Ita_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_Italian_RefSeq_freq.tsv", h=T)
+# Load C-ITA Purging dataset - Relative frequencies and Jackknifing information
+C_ITA_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_Central-Italy_RefSeq_freq.tsv", h=T)
 
 # Calculate Lxy and Lyx ratios
-Ita_Purging <- Ita_Purging %>%
+C_ITA_Purging <- C_ITA_Purging %>%
   mutate(Lxy_HIGH = Sum_fxy_HIGH / Sum_fxy_INTERGENIC,
          Lyx_HIGH = Sum_fyx_HIGH / Sum_fyx_INTERGENIC,
          Lxy_MODERATE = Sum_fxy_MODERATE / Sum_fxy_INTERGENIC,
@@ -841,11 +841,11 @@ Ita_Purging <- Ita_Purging %>%
          Rxy_Modifier = Lxy_MODIFIER / Lyx_MODIFIER)
 
 # Select only relevant Rxy values
-Rxy_Italian <- Ita_Purging %>%
+Rxy_C_ITA <- C_ITA_Purging %>%
   dplyr::select(Rxy_High, Rxy_Moderate, Rxy_Low, Rxy_Modifier)
 
 # Reshape data into long format for analysis
-Rxy_Italian <- Rxy_Italian %>% 
+Rxy_C_ITA <- Rxy_C_ITA %>% 
   pivot_longer(cols = starts_with("Rxy_"),   # Select Rxy columns
                names_to = "Impact",          # Create column for categories
                values_to = "Rxy") %>%        # Assign values to Rxy
@@ -864,26 +864,26 @@ calculate_minmax <- function(data) {
     mutate(across(where(is.numeric), 
                   ~ formatC(., format = "f", digits = 3)))}
 
-calculate_minmax(Rxy_Italian)
+calculate_minmax(Rxy_C_ITA)
 
-# Visualize Italian-origin 
+# Visualize C-ITA-origin 
 # Boxplot
-Ita_RefSeq <- ggplot(Rxy_Italian, aes(x = Rxy, y = Impact, fill = Impact)) +
+C_ITA_RefSeq <- ggplot(Rxy_C_ITA, aes(x = Rxy, y = Impact, fill = Impact)) +
   geom_boxplot(fill = "#0673B3",  
                outlier.shape = NA, 
                alpha = 0.8) +
-  labs(subtitle =  "Italian",
+  labs(subtitle =  "C-ITA",
        x = "Rxy",
        y = "Impact Category") +
   theme_bw() +
   scale_x_continuous(limits = c(0.97, 1.04))
 
 
-# 3.2 Calculate Rxy for French-origin samples ----
-Fra_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_French_RefSeq_freq.tsv", h=T)
+# 3.2 Calculate Rxy for W-EUR-origin samples ----
+W_EUR_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_West-Europe_RefSeq_freq.tsv", h=T)
 
 # Get Lxy and Lyx 
-Fra_Purging <- Fra_Purging %>%
+W_EUR_Purging <- W_EUR_Purging %>%
   mutate(Lxy_HIGH = Sum_fxy_HIGH/Sum_fxy_INTERGENIC,
          Lyx_HIGH = Sum_fyx_HIGH/Sum_fyx_INTERGENIC,
          Lxy_MODERATE = Sum_fxy_MODERATE/Sum_fxy_INTERGENIC,
@@ -900,46 +900,46 @@ Fra_Purging <- Fra_Purging %>%
          Rxy_Modifier = Lxy_MODIFIER/Lyx_MODIFIER)
 
 # Filter just Rxy values
-Rxy_French<- Fra_Purging %>%
+Rxy_W_EUR<- W_EUR_Purging %>%
   dplyr::select(Rxy_High,
                 Rxy_Moderate,
                 Rxy_Low,
                 Rxy_Modifier)
 
 # Transform data 
-Rxy_French<- Rxy_French %>% 
+Rxy_W_EUR<- Rxy_W_EUR %>% 
   pivot_longer(cols = starts_with("Rxy_"),  # Select all R_ columns
                names_to = "Impact",       # New column for impact categories
                values_to = "Rxy") %>%      # New column for Rxy values
   mutate(Impact = str_remove(Impact, "Rxy_")) # Clean up impact names
 
-# Visualize French-origin 
+# Visualize W-EUR-origin 
 # BoxPlot 
-Fra_RefSeq <- ggplot(Rxy_French, aes(x = Rxy, y = Impact, fill = Impact)) +
+W_EUR_RefSeq <- ggplot(Rxy_W_EUR, aes(x = Rxy, y = Impact, fill = Impact)) +
   geom_boxplot(fill = "#DD6A27",  
                outlier.shape = NA, 
                alpha = 0.8) +
-  labs(subtitle = "French",
+  labs(subtitle = "W-EUR",
        x = "Rxy",
        y = "Impact Category") +
   theme_bw() +
   scale_x_continuous(limits = c(0.77, 1.04))
 
-qq<- Ita_RefSeq + Fra_RefSeq
+qq<- C_ITA_RefSeq + W_EUR_RefSeq
 print(qq)  
 
 
 
 # Confirm data as factors and check min max values after jackknifing
-calculate_minmax(Rxy_French)
+calculate_minmax(Rxy_W_EUR)
 
 
 
 # 3.3 Calculate Rxy for each population ----
 
 # Define populations
-italian_pops <- c("BB", "DL", "NF", "SH", "VT", "WS")
-french_pops <- c("BU", "WB", "WE")
+c_ita_pops <- c("BB", "DL", "NF", "SH", "VT", "WS")
+w_eur_pops <- c("BU", "WB", "WE")
 
 # List input files
 freq_files <- list.files("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/IndividualPopulations", pattern = "*_freq\\.tsv$", full.names = TRUE)
@@ -974,8 +974,8 @@ calculate_Rxy <- function(file_path) {
 # Process all files
 Rxy_all <- bind_rows(lapply(freq_files, calculate_Rxy)) %>%
   mutate(Group = case_when(
-    Population %in% italian_pops ~ "Italian",
-    Population %in% french_pops ~ "French",
+    Population %in% c_ita_pops ~ "C-ITA",
+    Population %in% w_eur_pops ~ "W-EUR",
     TRUE ~ "Native" ))
 
 # Gather all the results 
@@ -997,11 +997,11 @@ for (pop in names(population_results)) {
 }
 
 # Generate plots per population
-# Create Italian plot with green color
-boxplot_Italian <- Rxy_all %>%
-  filter(Group == "Italian") %>%
+# Create C-ITA plot with green color
+boxplot_C_ITA <- Rxy_all %>%
+  filter(Group == "C-ITA") %>%
   ggplot(aes(x = Rxy, y = Impact)) +
-  geom_boxplot(fill = "#0673B3",  # Green for Italian
+  geom_boxplot(fill = "#0673B3",  # Green for C-ITA
                outlier.shape = NA, 
                alpha = 0.6) +
   facet_wrap(~ Population, nrow = 2) +
@@ -1010,11 +1010,11 @@ boxplot_Italian <- Rxy_all %>%
   labs(x = "Rxy", y = "Impact Category") +
   theme(legend.position = "none")
 
-# Create French plot with orange color
-boxplot_French <- Rxy_all %>%
-  filter(Group == "French") %>%
+# Create W-EUR plot with orange color
+boxplot_W_EUR <- Rxy_all %>%
+  filter(Group == "W-EUR") %>%
   ggplot(aes(x = Rxy, y = Impact)) +
-  geom_boxplot(fill = "#DD6A27",  # Orange for French
+  geom_boxplot(fill = "#DD6A27",  # Orange for W-EUR
                outlier.shape = NA, 
                alpha = 0.6) +
   facet_wrap(~ Population, nrow = 1) +
@@ -1024,7 +1024,7 @@ boxplot_French <- Rxy_all %>%
   theme(legend.position = "none")
 
 
-qq<- (Ita_RefSeq + Fra_RefSeq) / boxplot_Italian / boxplot_French + plot_layout(heights = c(1, 1, 0.5))
+qq<- (C_ITA_RefSeq + W_EUR_RefSeq) / boxplot_C_ITA / boxplot_W_EUR + plot_layout(heights = c(1, 1, 0.5))
 pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/Purging_V1.pdf", height=12, width=10, useDingbats = F)
 print(qq)
 dev.off()
@@ -1032,11 +1032,11 @@ dev.off()
 
 #### Purging for Supplementary Material
 
-# Load Italian Purging dataset - Relative frequencies and Jackknifing information
-Ita_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_Italian_Ensemble_freq.tsv", h=T)
+# Load C-ITA Purging dataset - Relative frequencies and Jackknifing information
+C_ITA_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_Central-Italy_Ensemble_freq.tsv", h=T)
 
 # Calculate Lxy and Lyx ratios
-Ita_Purging <- Ita_Purging %>%
+C_ITA_Purging <- C_ITA_Purging %>%
   mutate(Lxy_HIGH = Sum_fxy_HIGH / Sum_fxy_INTERGENIC,
          Lyx_HIGH = Sum_fyx_HIGH / Sum_fyx_INTERGENIC,
          Lxy_MODERATE = Sum_fxy_MODERATE / Sum_fxy_INTERGENIC,
@@ -1053,35 +1053,35 @@ Ita_Purging <- Ita_Purging %>%
          Rxy_Modifier = Lxy_MODIFIER / Lyx_MODIFIER)
 
 # Select only relevant Rxy values
-Rxy_Italian <- Ita_Purging %>%
+Rxy_C_ITA <- C_ITA_Purging %>%
   dplyr::select(Rxy_High, Rxy_Moderate, Rxy_Low, Rxy_Modifier)
 
 # Reshape data into long format for analysis
-Rxy_Italian <- Rxy_Italian %>% 
+Rxy_C_ITA <- Rxy_C_ITA %>% 
   pivot_longer(cols = starts_with("Rxy_"),   # Select Rxy columns
                names_to = "Impact",          # Create column for categories
                values_to = "Rxy") %>%        # Assign values to Rxy
   mutate(Impact = str_remove(Impact, "Rxy_")) # Clean category names
 
-calculate_minmax(Rxy_Italian)
+calculate_minmax(Rxy_C_ITA)
 
-# Visualize Italian-origin 
+# Visualize C-ITA-origin 
 # Boxplot
-Ita_Ensemble <- ggplot(Rxy_Italian, aes(x = Rxy, y = Impact, fill = Impact)) +
+C_ITA_Ensemble <- ggplot(Rxy_C_ITA, aes(x = Rxy, y = Impact, fill = Impact)) +
   geom_boxplot(fill = "#0673B3",  
                outlier.shape = NA, 
                alpha = 0.8) +
-  labs(subtitle =  "Italian",
+  labs(subtitle =  "C-ITA",
        x = "Rxy",
        y = "Impact Category") +
   theme_bw() +
   scale_x_continuous(limits = c(0.90, 1.04))
 
-# Load Italian Purging dataset - Relative frequencies and Jackknifing information
-Ita_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_Italian_Tiberius_freq.tsv", h=T)
+# Load C-ITA Purging dataset - Relative frequencies and Jackknifing information
+C_ITA_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_Central-Italy_Tiberius_freq.tsv", h=T)
 
 # Calculate Lxy and Lyx ratios
-Ita_Purging <- Ita_Purging %>%
+C_ITA_Purging <- C_ITA_Purging %>%
   mutate(Lxy_HIGH = Sum_fxy_HIGH / Sum_fxy_INTERGENIC,
          Lyx_HIGH = Sum_fyx_HIGH / Sum_fyx_INTERGENIC,
          Lxy_MODERATE = Sum_fxy_MODERATE / Sum_fxy_INTERGENIC,
@@ -1098,35 +1098,35 @@ Ita_Purging <- Ita_Purging %>%
          Rxy_Modifier = Lxy_MODIFIER / Lyx_MODIFIER)
 
 # Select only relevant Rxy values
-Rxy_Italian <- Ita_Purging %>%
+Rxy_C_ITA <- C_ITA_Purging %>%
   dplyr::select(Rxy_High, Rxy_Moderate, Rxy_Low, Rxy_Modifier)
 
 # Reshape data into long format for analysis
-Rxy_Italian <- Rxy_Italian %>% 
+Rxy_C_ITA <- Rxy_C_ITA %>% 
   pivot_longer(cols = starts_with("Rxy_"),   # Select Rxy columns
                names_to = "Impact",          # Create column for categories
                values_to = "Rxy") %>%        # Assign values to Rxy
   mutate(Impact = str_remove(Impact, "Rxy_")) # Clean category names
 
-calculate_minmax(Rxy_Italian)
+calculate_minmax(Rxy_C_ITA)
 
-# Visualize Italian-origin 
+# Visualize C-ITA-origin 
 # Boxplot
-Ita_Tiberius <- ggplot(Rxy_Italian, aes(x = Rxy, y = Impact, fill = Impact)) +
+C_ITA_Tiberius <- ggplot(Rxy_C_ITA, aes(x = Rxy, y = Impact, fill = Impact)) +
   geom_boxplot(fill = "#0673B3",  
                outlier.shape = NA, 
                alpha = 0.8) +
-  labs(subtitle =  "Italian",
+  labs(subtitle =  "C-ITA",
        x = "Rxy",
        y = "Impact Category") +
   theme_bw() +
   scale_x_continuous(limits = c(0.90, 1.04))
 
-# 3.2 Calculate Rxy for French-origin samples ----
-Fra_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_French_Ensemble_freq.tsv", h=T)
+# 3.2 Calculate Rxy for W-EUR-origin samples ----
+W_EUR_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_West-Europe_Ensemble_freq.tsv", h=T)
 
 # Get Lxy and Lyx 
-Fra_Purging <- Fra_Purging %>%
+W_EUR_Purging <- W_EUR_Purging %>%
   mutate(Lxy_HIGH = Sum_fxy_HIGH/Sum_fxy_INTERGENIC,
          Lyx_HIGH = Sum_fyx_HIGH/Sum_fyx_INTERGENIC,
          Lxy_MODERATE = Sum_fxy_MODERATE/Sum_fxy_INTERGENIC,
@@ -1143,35 +1143,35 @@ Fra_Purging <- Fra_Purging %>%
          Rxy_Modifier = Lxy_MODIFIER/Lyx_MODIFIER)
 
 # Filter just Rxy values
-Rxy_French<- Fra_Purging %>%
+Rxy_W_EUR<- W_EUR_Purging %>%
   dplyr::select(Rxy_High,
                 Rxy_Moderate,
                 Rxy_Low,
                 Rxy_Modifier)
 
 # Transform data 
-Rxy_French<- Rxy_French %>% 
+Rxy_W_EUR<- Rxy_W_EUR %>% 
   pivot_longer(cols = starts_with("Rxy_"),  # Select all R_ columns
                names_to = "Impact",       # New column for impact categories
                values_to = "Rxy") %>%      # New column for Rxy values
   mutate(Impact = str_remove(Impact, "Rxy_")) # Clean up impact names
 
-# Visualize French-origin 
+# Visualize W-EUR-origin 
 # BoxPlot 
-Fra_Ensemble <- ggplot(Rxy_French, aes(x = Rxy, y = Impact, fill = Impact)) +
+W_EUR_Ensemble <- ggplot(Rxy_W_EUR, aes(x = Rxy, y = Impact, fill = Impact)) +
   geom_boxplot(fill = "#DD6A27",  
                outlier.shape = NA, 
                alpha = 0.8) +
-  labs(subtitle = "French",
+  labs(subtitle = "W-EUR",
        x = "Rxy",
        y = "Impact Category") +
   theme_bw() +
   scale_x_continuous(limits = c(0.76, 1.04))
 
-Fra_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_French_Tiberius_freq.tsv", h=T)
+W_EUR_Purging <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Purging/All_West-Europe_Tiberius_freq.tsv", h=T)
 
 # Get Lxy and Lyx 
-Fra_Purging <- Fra_Purging %>%
+W_EUR_Purging <- W_EUR_Purging %>%
   mutate(Lxy_HIGH = Sum_fxy_HIGH/Sum_fxy_INTERGENIC,
          Lyx_HIGH = Sum_fyx_HIGH/Sum_fyx_INTERGENIC,
          Lxy_MODERATE = Sum_fxy_MODERATE/Sum_fxy_INTERGENIC,
@@ -1188,33 +1188,33 @@ Fra_Purging <- Fra_Purging %>%
          Rxy_Modifier = Lxy_MODIFIER/Lyx_MODIFIER)
 
 # Filter just Rxy values
-Rxy_French<- Fra_Purging %>%
+Rxy_W_EUR<- W_EUR_Purging %>%
   dplyr::select(Rxy_High,
                 Rxy_Moderate,
                 Rxy_Low,
                 Rxy_Modifier)
 
 # Transform data 
-Rxy_French<- Rxy_French %>% 
+Rxy_W_EUR<- Rxy_W_EUR %>% 
   pivot_longer(cols = starts_with("Rxy_"),  # Select all R_ columns
                names_to = "Impact",       # New column for impact categories
                values_to = "Rxy") %>%      # New column for Rxy values
   mutate(Impact = str_remove(Impact, "Rxy_")) # Clean up impact names
 
-# Visualize French-origin 
+# Visualize W-EUR-origin 
 # BoxPlot 
-Fra_Tiberius <- ggplot(Rxy_French, aes(x = Rxy, y = Impact, fill = Impact)) +
+W_EUR_Tiberius <- ggplot(Rxy_W_EUR, aes(x = Rxy, y = Impact, fill = Impact)) +
   geom_boxplot(fill = "#DD6A27",  
                outlier.shape = NA, 
                alpha = 0.8) +
-  labs(subtitle = "French",
+  labs(subtitle = "W-EUR",
        x = "Rxy",
        y = "Impact Category") +
   theme_bw() +
   scale_x_continuous(limits = c(0.76, 1.04))
 
 pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/Purging_Supp.pdf", height=8, width=10, useDingbats = F)
-(Ita_Ensemble + Fra_Ensemble) / (Ita_Tiberius + Fra_Tiberius)
+(C_ITA_Ensemble + W_EUR_Ensemble) / (C_ITA_Tiberius + W_EUR_Tiberius)
 dev.off()
 
 
