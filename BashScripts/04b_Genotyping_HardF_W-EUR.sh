@@ -1,6 +1,7 @@
 #!/bin/bash -l
 
-# Objective: Array for Genotyping and hard-filtering in Italian-orign samples 
+
+# Objective:  Array for Genotyping and hard-filtering in West-Europe-origin samples
 
 #Modules
 module load gatk/4.5.0.0
@@ -14,9 +15,9 @@ chrom_list="./Chromosome_autosomal.txt"
 
 # Array the chromosomes
 chr=$(sed -n "${SLURM_ARRAY_TASK_ID}p" "$chrom_list")
-group="Italian"
+group="West-Europe"
 
-# The list of GVCF was created previously depending on the origin of the samples (Italian or French)
+# The list of GVCF was created previously depending on the origin of the samples (Central-Italy or West-Europe)
 date 
 echo "${chr}_in process" 
 
@@ -81,7 +82,7 @@ echo "Invariant sites found"
 
 echo "Applying filters"
 
-# Hard-Filtering for SNPs - Include QUAL and QD expressions /  Dp estimated by #samples (18 italian) x Desired covergae (11x to 44x)
+# Hard-Filtering for SNPs - Include QUAL and QD expressions /  Dp estimated by #samples (14 West-Europe) x Desired covergae (11x to 44x)
 
 gatk --java-options "-Xmx8g" VariantFiltration \
 -R ${reference} \
@@ -95,13 +96,13 @@ gatk --java-options "-Xmx8g" VariantFiltration \
 --filter-expression "MQ < 40.0" --filter-name "MapQual40" \
 --filter-expression "MQRankSum < -12.5" --filter-name "MQRankSum-12.5" \
 --filter-expression "ReadPosRankSum < -8.0" --filter-name "ReadPosRankSum-8" \
---filter-expression "DP < 198"  --filter-name "minDepth" \
---filter-expression "DP > 792"  --filter-name "maxDepth" \
+--filter-expression "DP < 154"  --filter-name "minDepth" \
+--filter-expression "DP > 616"  --filter-name "maxDepth" \
 -O ${savedir}/${chr}_${group}_snps_filtered.vcf.gz
 
 echo "SNPs filtered"
 
-# Hard-Filtering for invariant sites - Remove QUAL and QD expressions /  Dp estimated by #samples (18 italian) x Desired covergae (11x to 44x)
+# Hard-Filtering for invariant sites - Remove QUAL and QD expressions /  Dp estimated by #samples (14 West-Europe) x Desired covergae (11x to 44x)
 
 gatk --java-options "-Xmx8g" VariantFiltration \
 -R ${reference} \
@@ -113,8 +114,8 @@ gatk --java-options "-Xmx8g" VariantFiltration \
 --filter-expression "MQ < 40.0" --filter-name "MapQual40" \
 --filter-expression "MQRankSum < -12.5" --filter-name "MQRankSum-12.5" \
 --filter-expression "ReadPosRankSum < -8.0" --filter-name "ReadPosRankSum-8" \
---filter-expression "DP < 198"  --filter-name "minDepth" \
---filter-expression "DP > 792"  --filter-name "maxDepth" \
+--filter-expression "DP < 154"  --filter-name "minDepth" \
+--filter-expression "DP > 616"  --filter-name "maxDepth" \
 -O ${savedir}/${chr}_${group}_invariant_filtered.vcf.gz
 
 echo "Invariant sites filtered"

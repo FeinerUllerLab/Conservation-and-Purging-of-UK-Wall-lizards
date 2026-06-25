@@ -11,7 +11,7 @@ mkdir -p /cfs/klemming/projects/snic/snic2022-23-124/Santiago/SNP_calling/FinalV
 statsdir=/cfs/klemming/projects/snic/snic2022-23-124/Santiago/SNP_calling/FinalVCFs/OnlySNPs_Data/Steps_Stats
 
 # Merge both populaions VCFs 
-bcftools merge -Oz -o ${datadir}/Merged.vcf.gz ${datadir}/All_French_filtered.vcf.gz ${datadir}/All_Italian_filtered.vcf.gz
+bcftools merge -Oz -o ${datadir}/Merged.vcf.gz ${datadir}/All_West-Europe_filtered.vcf.gz ${datadir}/All_Central-Italy_filtered.vcf.gz
 bcftools index ${savedir}/Merged.vcf.gz
 
 # Extract only SNPs (remove indels and multi-allelic sites)

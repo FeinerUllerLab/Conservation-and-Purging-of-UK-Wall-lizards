@@ -8,8 +8,8 @@ mkdir -p /cfs/klemming/projects/snic/snic2022-23-124/Santiago/SNP_calling/ROH_Jo
 savedir=/cfs/klemming/projects/snic/snic2022-23-124/Santiago/SNP_calling/ROH_JointGenotyping
 
 # Define sample group files
-Italian="Italian"  # List of samples for group 1
-French="French"  # List of samples for group 2
+Central-Italy="Central-Italy"  # List of samples for group 1
+West-Europe="West-Europe"  # List of samples for group 2
 chromosomes="/cfs/klemming/projects/snic/snic2022-23-124/Santiago/Scripts/Chromosome_autosomal.txt"  # Chromosome names
 
 # Check if the chromosome file exists
@@ -19,8 +19,8 @@ if [[ ! -f $chromosomes ]]; then
 fi
 
 # Create GVCF lists for each group and chromosome
-for group in Italian; do
-    groupfile=${!group}  # Choose one of the groups and run (Italian or French)
+for group in Central-Italy West-Europe; do
+    groupfile=${!group}  # Choose one of the groups and run (Central Italy or West Europe)
 
     # Check if the sample file exists
     if [[ ! -f $groupfile ]]; then
