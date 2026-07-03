@@ -320,7 +320,7 @@ RoH_Het_C_ITA %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n()
   )
@@ -376,7 +376,7 @@ RoH_Het_W_EUR %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n()
   )
@@ -421,29 +421,17 @@ wilcox.test(geno_F.HET ~ Origin, data = RoH_HET_W_EUR)
 # Cliff's delta
 cliff.delta(subset(RoH_HET_W_EUR, Origin == "Nat-W-EUR")$geno_F.HET, subset(RoH_HET_W_EUR, Origin == "Int-W-EUR")$geno_F.HET)
 
-## ROH Length
-# Length of ROHs comparison 
-C_ITA_BCF_model <- glmer(Length ~ Origin + (1 | Sample), 
-                       family = Gamma(link = "log"), 
-                       data = RoH_HET_W_EUR)
-summary(C_ITA_BCF_model)
+## ROH cumulative Length
+wilcox.test(Length ~ Origin, data = RoH_HET_IT)
+cliff.delta(subset(RoH_HET_IT, Origin == "Nat-C-ITA")$Length, subset(RoH_HET_IT, Origin == "Int-C-ITA")$Length)
+wilcox.test(Length ~ Origin, data = RoH_HET_FR)
+cliff.delta(subset(RoH_HET_FR, Origin == "Nat-W-EUR")$Length, subset(RoH_HET_FR, Origin == "Int-W-EUR")$Length)
 
-# Get the proportion of the effect 
-exp(fixef(C_ITA_BCF_model)[-1]) #  ~ meaning 0.7X difference.
-
-# Confidence intervals for the model 
-# Function for bootstrapping 1000 replicates 
-get_boot_ci <- function(model, term, nsim = 1000) {
-  boot_fun <- function(.) {
-    fixef(.)[term]
-  }
-  boot_ci <- bootMer(model, 
-                     FUN = boot_fun, 
-                     nsim = nsim,
-                     type = "parametric")
-  ci <- boot.ci(boot_ci, type = "perc", conf = 0.95)$percent[4:5]
-  return(exp(ci))
-}
+## ROH Number
+wilcox.test(nRoH ~ Origin, data = RoH_HET_IT)
+cliff.delta(subset(RoH_HET_IT, Origin == "Nat-C-ITA")$nRoH, subset(RoH_HET_IT, Origin == "Int-C-ITA")$nRoH)
+wilcox.test(nRoH ~ Origin, data = RoH_HET_FR)
+cliff.delta(subset(RoH_HET_FR, Origin == "Nat-W-EUR")$nRoH, subset(RoH_HET_FR, Origin == "Int-W-EUR")$nRoH)
 
 ## FROH
 wilcox.test(FRoH ~ Origin, data = RoH_HET_C_ITA)
@@ -544,7 +532,7 @@ RoH_C_ITA_plink_2Mb %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
 RoH_W_EUR_plink_2Mb %>%
@@ -554,7 +542,7 @@ RoH_W_EUR_plink_2Mb %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
 RoH_C_ITA_Supp %>%
@@ -564,7 +552,7 @@ RoH_C_ITA_Supp %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
 RoH_W_EUR_Supp %>%
@@ -574,7 +562,7 @@ RoH_W_EUR_Supp %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
 RoH_C_ITA_plink_500kb %>%
@@ -584,7 +572,7 @@ RoH_C_ITA_plink_500kb %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
 RoH_W_EUR_plink_500kb %>%
@@ -594,7 +582,7 @@ RoH_W_EUR_plink_500kb %>%
     min_nRoH   = min(nRoH, na.rm = TRUE),
     max_nRoH   = max(nRoH, na.rm = TRUE),
     total_nRoH = sum(nRoH, na.rm = TRUE),
-    mean_Length = mean(Length, na.rm = TRUE),
+    mean_Length = mean(Length, na.rm = TRUE)/1000000,
     mean_FRoH = mean(FRoH, na.rm = TRUE),
     n          = n())
 
@@ -1215,29 +1203,6 @@ W_EUR_Tiberius <- ggplot(Rxy_W_EUR, aes(x = Rxy, y = Impact, fill = Impact)) +
 
 pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/Purging_Supp.pdf", height=8, width=10, useDingbats = F)
 (C_ITA_Ensemble + W_EUR_Ensemble) / (C_ITA_Tiberius + W_EUR_Tiberius)
-dev.off()
-
-
-
-#####################################################
-### Plot the position of Recombination HotSpots
-#####################################################
-
-# ---- 1. Read chromosome sizes ----
-chrom <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/Chr_Length_GenBank.txt", h=F)
-chrom$start <- 1
-chrom <- chrom[,c(1,3,2)]
-colnames(chrom) <- c("chr", "start", "end")
-
-# ---- 2. Read VCF (skip header lines starting with ##) ----
-#HotSpots <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/RecombHotSpots/All_Merged_Hotspots.bed", header = T)
-HotSpots <- read.table("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/RecombHotSpots/allchrom_w2kb_s1kb_f40kb_fd5_sw0_sf0_overlaps-mergeall.txt", header = T)
-
-# ---- 3. Plot ----
-pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/RecombHotspots.pdf", height=5, width=13, useDingbats = F)
-ggplot() + geom_segment(data = chrom, aes(x = start, xend = end, y = chr, yend = chr), size = 3, color = "grey70") + 
-  geom_point(data = HotSpots, aes(x = start, y = chr),  alpha=0.4, color = "red", shape=16) +
-  theme_bw() + ggtitle("Recombination hotspots (N=3297)") + labs(x = "Genomic position", y = "Chromosome") + theme(panel.grid = element_blank())
 dev.off()
 
 
