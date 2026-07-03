@@ -434,8 +434,10 @@ wilcox.test(nRoH ~ Origin, data = RoH_HET_FR)
 cliff.delta(subset(RoH_HET_FR, Origin == "Nat-W-EUR")$nRoH, subset(RoH_HET_FR, Origin == "Int-W-EUR")$nRoH)
 
 ## FROH
-wilcox.test(FRoH ~ Origin, data = RoH_HET_C_ITA)
-wilcox.test(FRoH ~ Origin, data = RoH_HET_W_EUR)
+wilcox.test(FRoH ~ Origin, data = RoH_HET_IT)
+cliff.delta(subset(RoH_HET_IT, Origin == "Nat-C-ITA")$FRoH, subset(RoH_HET_IT, Origin == "Int-C-ITA")$FRoH)
+wilcox.test(FRoH ~ Origin, data = RoH_HET_FR)
+cliff.delta(subset(RoH_HET_FR, Origin == "Nat-W-EUR")$FRoH, subset(RoH_HET_FR, Origin == "Int-W-EUR")$FRoH)
 
 #####
 # ROH for Supplements (Plink + different length)
