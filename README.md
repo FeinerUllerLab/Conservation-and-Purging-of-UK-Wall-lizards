@@ -1,7 +1,7 @@
 # Conservation-and-Purging-of-Wall-lizards
 ---
 
-Scripts and data analysis used for the article: "Shaped by Isolation: Genetic Load and Purging in Non-Native Populations of Wall Lizards (*Podarcis muralis*)."
+Scripts and data analysis used for the article: "Genetic Load and Purging of Deleteterious Alleles in Non-Native Populations of teh Common Wall Lizard (*Podarcis muralis*)."
 
 This repository contains the scripts developed to analyze population structure, genetic diversity, inbreeding, and the purging of deleterious mutations using whole-genome data from non-native and native populations of wall lizards.
 
@@ -33,8 +33,6 @@ This directory includes the pipeline, starting from raw reads to the analysis of
 * **Purging of deleterious mutations:**
     * **12. Annotation of variants** based on predicted impact.
     * **13. Relative frequencies calculation** for derived allele ratios and block jackknifing.
-* **Recombination sites analysis** 
-    * **14. Recombination hotspots finding** 5kb windows with 5x recombinarion in three different scenarions (40Kb, 1Mb and chromosme backgrounds)
 
 
 ### R Scripts
