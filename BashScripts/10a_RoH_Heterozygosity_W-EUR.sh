@@ -33,18 +33,18 @@ cd /home/feiner/Projects/UKwallies/Results_RoH_Het_W-EUR
 
 #### Add a fictitious fully homozygous sample (Ppi_Hz) to calculate the length of the homozygous genome
 # copy the header
-#zcat ${VCF} | head -n 10000 | grep "^#" > head.tmp
+zcat ${VCF} | head -n 10000 | grep "^#" > head.tmp
 # add new sample name
-#sed -i '$ s/$/\tPxx_Hz/' head.tmp
+sed -i '$ s/$/\tPxx_Hz/' head.tmp
 # add 0/0 genotypes
-#zcat ${VCF} | grep -v "^#" | sed -e 's/$/\t0\/0/g' | cat head.tmp - | bgzip > ${VCF}_pseudo
-#rm head.tmp
+zcat ${VCF} | grep -v "^#" | sed -e 's/$/\t0\/0/g' | cat head.tmp - | bgzip > ${VCF}_pseudo
+rm head.tmp
 
 #### BCFTOOLS
 # -e tells it to estimate frequencies based only on the actual samples - not the fictitious one
-#bcftools roh ${VCF}_pseudo -e ${samples_list} -G 30 -O r -o roh.pseudo
+bcftools roh ${VCF}_pseudo -e ${samples_list} -G 30 -O r -o roh.pseudo
 # quality filters: Phred score > 50 & length > 1 Mb
-#cat roh.pseudo | awk '$8 > 50' > roh.pseudo.qual
+cat roh.pseudo | awk '$8 > 50' > roh.pseudo.qual
 awk -v minsize="$RoH_size_num" '$6 > minsize' roh.pseudo.qual > roh.pseudo.qual.W-EUR.${RoH_size_nam}
 
 #### Calculate FRoH for each sample: (sum of ROHs > minsize)/(length of homozygous genome) and export relevant data
@@ -70,17 +70,17 @@ while read -r sample; do
 done < "$samples_list"
 
 #### Heterozygosity - genome-wide (remove outgroup)
-#plink --vcf ${VCF} -aec --double-id --make-bed --out final.all.plink
-#plink -bfile final.all.plink -aec --double-id --het --out het
-#plink -bfile final.all.plink -aec --double-id --missing --out miss
+plink --vcf ${VCF} -aec --double-id --make-bed --out final.all.plink
+plink -bfile final.all.plink -aec --double-id --het --out het
+plink -bfile final.all.plink -aec --double-id --missing --out miss
 
 #collect output in one file
-#Het_sum_geno="heterozygosity_summary_genomewide_W-EUR.tsv"
-#echo -e "Sample\tNumberVariableSites\tObservedHomozygous\tMissingSites\tGenotypedSites" > "$Het_sum_geno"
-#paste \
-#  <(awk 'NR>1 {print $1 "\t" $5 "\t" $3}' het.het) \
-#  <(awk 'NR>1 {print $4 "\t" $5}' miss.imiss) \
-#>> "$Het_sum_geno"
+Het_sum_geno="heterozygosity_summary_genomewide_W-EUR.tsv"
+echo -e "Sample\tNumberVariableSites\tObservedHomozygous\tMissingSites\tGenotypedSites" > "$Het_sum_geno"
+paste \
+  <(awk 'NR>1 {print $1 "\t" $5 "\t" $3}' het.het) \
+  <(awk 'NR>1 {print $4 "\t" $5}' miss.imiss) \
+>> "$Het_sum_geno"
 
 echo "Summary written to $Het_sum_geno"
 
