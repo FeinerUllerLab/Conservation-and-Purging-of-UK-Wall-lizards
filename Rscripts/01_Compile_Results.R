@@ -805,6 +805,43 @@ ggplot(df_combined, aes(x = Sample, y = IDRisk, fill = Origin)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size=7))
 dev.off()
 
+### Embryonic mortality
+EmbMort <- read.csv("C:/Users/feiner/Dropbox/MS_UK_wallies/Data/hatching_failure_pop_level.csv")
+
+IDRisk_pop <- df_combined %>%
+  mutate(pop = str_remove(Sample, "\\d+$")) %>%
+  filter(pop %in% EmbMort$pop) %>%
+  group_by(pop) %>%
+  summarise(
+    mean_IDRisk = mean(IDRisk, na.rm = TRUE),
+    SE_IDRisk   = sd(IDRisk, na.rm = TRUE) / sqrt(sum(!is.na(IDRisk))),
+    n_IDRisk    = sum(!is.na(IDRisk)),
+    .groups = "drop")
+
+EmbMort <- EmbMort %>% left_join(IDRisk_pop, by = "pop")
+
+cor.test(EmbMort$mean_IDRisk, EmbMort$mean_hf, method = "spearman")
+
+pdf("C:/Users/feiner/Dropbox/MS_UK_wallies/Plots/IDRisk_EmbryonicMortality_V1.pdf", height=6, width=6, useDingbats = F)
+ggplot(EmbMort, aes(x = mean_IDRisk, y = mean_hf, color = region)) +
+  # Horizontal error bars: IDRisk ± SE
+  geom_errorbarh(
+    aes(xmin = mean_IDRisk - SE_IDRisk,
+        xmax = mean_IDRisk + SE_IDRisk),
+    height = 0) +
+  # Vertical error bars: hatching failure ± SE
+  geom_errorbar(
+    aes(ymin = mean_hf - SE_hf,
+        ymax = mean_hf + SE_hf),
+    width = 0) +
+  geom_point(size = 3) +
+  scale_color_manual(values = c("ITA" = "#6BCBDA", "FRA" = "#EFE808")) +
+  theme_classic() +
+  labs(x = "ID risk",
+    y = "Mean hatching failure",
+    color = "Lineage")
+dev.off()
+
 ###########################
 # 3. PURGING  -----
 ###########################
